@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SheShield — AI Women Safety Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#080a10;--bg2:#0f1119;--bg3:#161924;--bg4:#1e2235;--bg5:#252a40;
+  --rose:#ff3567;--rose2:#ff6b94;--rose3:#ffadc5;--roseglow:rgba(255,53,103,0.2);
+  --amber:#f5a623;--green:#22d07a;--blue:#4f8ef7;--purple:#a463f2;--cyan:#22d4dd;
+  --text:#eef0f8;--text2:#8892b0;--text3:#4a5270;--text4:#2a2f45;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,53,103,0.25);--border3:rgba(255,255,255,0.12);
+  --r:10px;--r2:16px;--r3:22px;
+  --font:'DM Sans',sans-serif;--mono:'Space Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;line-height:1.6}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--rose)}
+
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes pulse-glow{0%,100%{box-shadow:0 0 20px var(--roseglow)}50%{box-shadow:0 0 50px rgba(255,53,103,0.4)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes ping{0%{transform:scale(1);opacity:1}75%,100%{transform:scale(2);opacity:0}}
+@keyframes slide-in{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fade-up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes count-dot{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
+@keyframes sos-ring{0%{transform:scale(1);opacity:0.7}100%{transform:scale(2.5);opacity:0}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes moveUser{0%{transform:translate(0,0)}25%{transform:translate(8px,-5px)}50%{transform:translate(15px,-12px)}75%{transform:translate(10px,-8px)}100%{transform:translate(0,0)}}
+@keyframes ripple{0%{transform:scale(0.8);opacity:1}100%{transform:scale(2.2);opacity:0}}
+@keyframes anomalyPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.05)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes popIn{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+@keyframes batteryDrain{0%{width:100%}100%{width:8%}}
+@keyframes pathTrace{stroke-dashoffset:300;animation:pathTrace 2s ease forwards}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 8px rgba(255,53,103,0.3)}50%{box-shadow:0 0 20px rgba(255,53,103,0.7)}}
+
+.slide-in{animation:slide-in 0.4s ease both}
+.fade-up{animation:fade-up 0.5s ease both}
+
+.app{display:flex;flex-direction:column;min-height:100vh}
+.main-content{flex:1;padding-bottom:80px}
+
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:200;background:rgba(8,10,16,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 20px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer}
+.logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--rose),#c0204a);display:flex;align-items:center;justify-content:center;font-size:18px;box-shadow:0 0 16px var(--roseglow)}
+.logo-text{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-0.3px}
+.logo-text span{color:var(--rose)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.live-badge{display:flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:rgba(34,208,122,0.1);border:1px solid rgba(34,208,122,0.2);font-size:11px;font-weight:600;color:var(--green);cursor:pointer;transition:all 0.2s}
+.live-badge:hover{background:rgba(34,208,122,0.2)}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:blink 1.5s ease-in-out infinite}
+.user-chip{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 5px;background:var(--bg3);border:1px solid var(--border);border-radius:24px;cursor:pointer;transition:all 0.2s}
+.user-chip:hover{border-color:var(--border3)}
+.user-avatar{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
+.btn-logout{padding:5px 12px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--font);transition:all 0.2s}
+.btn-logout:hover{border-color:var(--rose);color:var(--rose)}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(8,10,16,0.98);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;height:70px;padding:0 8px;}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;transition:all 0.2s;border-radius:10px;margin:6px 2px;position:relative}
+.nav-btn:hover{background:var(--bg3)}
+.nav-btn.active{background:rgba(255,53,103,0.08)}
+.nav-icon{font-size:20px;transition:all 0.2s;filter:grayscale(1);opacity:0.5}
+.nav-btn.active .nav-icon{filter:none;opacity:1}
+.nav-label{font-size:9px;font-weight:600;letter-spacing:0.4px;color:var(--text3);text-transform:uppercase;transition:all 0.2s}
+.nav-btn.active .nav-label{color:var(--rose)}
+.nav-badge{position:absolute;top:6px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--rose);border:2px solid var(--bg)}
+
+/* SCREENS */
+.screen{display:none;padding:16px 16px 0;animation:fade-up 0.3s ease}
+.screen.active{display:block}
+
+/* CARDS */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px 18px;transition:border-color 0.2s}
+.card:hover{border-color:var(--border3)}
+.card.glow{border-color:var(--border2);box-shadow:0 0 24px var(--roseglow)}
+.card-title{font-size:11px;font-weight:600;letter-spacing:0.8px;color:var(--text2);text-transform:uppercase;margin-bottom:12px}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.badge.danger{background:rgba(255,53,103,0.15);color:var(--rose)}
+.badge.warning{background:rgba(245,166,35,0.15);color:var(--amber)}
+.badge.success{background:rgba(34,208,122,0.15);color:var(--green)}
+.badge.info{background:rgba(79,142,247,0.15);color:var(--blue)}
+.badge.purple{background:rgba(164,99,242,0.15);color:var(--purple)}
+
+.risk-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;font-size:11px;font-weight:700;cursor:pointer}
+.risk-badge .dot{width:6px;height:6px;border-radius:50%}
+.risk-badge.low{background:rgba(34,208,122,0.12);color:var(--green)}
+.risk-badge.low .dot{background:var(--green)}
+.risk-badge.medium{background:rgba(245,166,35,0.12);color:var(--amber)}
+.risk-badge.medium .dot{background:var(--amber)}
+.risk-badge.high{background:rgba(255,53,103,0.12);color:var(--rose)}
+.risk-badge.high .dot{background:var(--rose)}
+
+/* SCORE CARD */
+.score-card{background:var(--bg2);border-radius:var(--r2);padding:20px;border:1px solid var(--border2);box-shadow:0 0 32px var(--roseglow);cursor:pointer;transition:all 0.2s}
+.score-card:hover{box-shadow:0 0 48px rgba(255,53,103,0.35)}
+.score-number{font-family:var(--mono);font-size:52px;font-weight:700;line-height:1;background:linear-gradient(135deg,var(--rose),var(--amber));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.score-bar-track{height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;margin:12px 0;cursor:pointer}
+.score-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--amber),var(--rose));transition:width 1.2s cubic-bezier(0.4,0,0.2,1)}
+.score-factors{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+.factor-cell{background:var(--bg3);border-radius:9px;padding:9px 10px;text-align:center;cursor:pointer;transition:all 0.2s;border:1px solid transparent}
+.factor-cell:hover{border-color:var(--border3);background:var(--bg4)}
+
+/* MAP */
+.map-container{position:relative;width:100%;padding-bottom:55%;background:var(--bg3);border-radius:var(--r2);overflow:hidden;border:1px solid var(--border);cursor:crosshair}
+.map-svg{position:absolute;inset:0;width:100%;height:100%}
+.map-legend{position:absolute;bottom:8px;right:8px;background:rgba(8,10,16,0.92);border-radius:8px;padding:6px 10px;display:flex;gap:10px;backdrop-filter:blur(4px);border:1px solid var(--border)}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2);cursor:pointer}
+.legend-dot{width:7px;height:7px;border-radius:50%}
+.map-controls{position:absolute;top:8px;right:8px;display:flex;flex-direction:column;gap:4px}
+.map-ctrl-btn{width:28px;height:28px;background:rgba(8,10,16,0.88);border:1px solid var(--border);border-radius:6px;color:var(--text2);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;backdrop-filter:blur(4px)}
+.map-ctrl-btn:hover{background:var(--bg4);border-color:var(--border3);color:var(--text)}
+
+/* ANOMALY BANNER */
+.anomaly-banner{background:linear-gradient(135deg,rgba(255,53,103,0.1),rgba(245,166,35,0.08));border:1px solid rgba(255,53,103,0.3);border-radius:12px;padding:12px 14px;margin-bottom:10px;animation:anomalyPulse 2s ease-in-out infinite;cursor:pointer}
+.anomaly-banner:hover{background:linear-gradient(135deg,rgba(255,53,103,0.15),rgba(245,166,35,0.12))}
+
+/* SOS */
+.sos-wrap{display:flex;flex-direction:column;align-items:center;gap:8px}
+.sos-rings{position:relative;display:flex;align-items:center;justify-content:center;width:100px;height:100px}
+.sos-ring{position:absolute;inset:0;border-radius:50%;background:var(--rose);opacity:0}
+.sos-ring.r1{animation:sos-ring 2s ease-out 0s infinite}
+.sos-ring.r2{animation:sos-ring 2s ease-out 0.7s infinite}
+.sos-btn{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#ff3567,#c0204a);border:3px solid rgba(255,255,255,0.2);color:#fff;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--mono);box-shadow:0 0 30px rgba(255,53,103,0.5);transition:transform 0.1s,box-shadow 0.2s;position:relative;z-index:1;letter-spacing:0.5px}
+.sos-btn:active{transform:scale(0.93)}
+.sos-btn:hover{box-shadow:0 0 40px rgba(255,53,103,0.7)}
+.sos-hint{font-size:11px;color:var(--text3)}
+.sos-active-banner{background:rgba(255,53,103,0.12);border:1px solid var(--border2);border-radius:10px;padding:12px 16px;text-align:center;animation:glowPulse 1.5s ease-in-out infinite}
+
+/* ALERTS */
+.alert-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-bottom:7px;cursor:pointer;transition:all 0.2s}
+.alert-item:hover{border-color:var(--border3);background:var(--bg3)}
+.alert-icon{font-size:16px;width:28px;text-align:center;flex-shrink:0}
+.alert-body{flex:1}
+.alert-msg{font-size:13px;color:var(--text)}
+.alert-time{font-size:10px;color:var(--text3);margin-top:2px}
+
+/* GUARDIANS */
+.guardian-item{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--bg2);border-radius:10px;border:1px solid var(--border);margin-bottom:7px;cursor:pointer;transition:all 0.2s}
+.guardian-item:hover{border-color:var(--border3);background:var(--bg3)}
+.g-status{font-size:10px;font-weight:600;margin-left:auto}
+
+/* CHAT */
+.chat-window{display:flex;flex-direction:column;height:340px}
+.chat-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;padding:4px 0;padding-right:4px}
+.chat-msg{display:flex;justify-content:flex-end}
+.chat-msg.ai{justify-content:flex-start}
+.chat-bubble{max-width:82%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.5}
+.chat-msg.user .chat-bubble{background:var(--rose);color:#fff;border-radius:14px 14px 4px 14px}
+.chat-msg.ai .chat-bubble{background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:14px 14px 14px 4px}
+.chat-sender{font-size:10px;color:var(--rose2);font-weight:600;margin-bottom:3px}
+.chat-typing{display:flex;gap:5px;padding:9px 13px;background:var(--bg3);border:1px solid var(--border);border-radius:14px 14px 14px 4px;width:60px}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);animation:count-dot 1.4s ease-in-out infinite}
+.typing-dot:nth-child(2){animation-delay:0.2s}
+.typing-dot:nth-child(3){animation-delay:0.4s}
+.chat-input-row{display:flex;gap:8px;margin-top:10px;border-top:1px solid var(--border);padding-top:10px}
+.chat-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:9px 13px;color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color 0.2s}
+.chat-input:focus{border-color:rgba(255,53,103,0.4)}
+.chat-send{padding:9px 16px;background:var(--rose);border:none;border-radius:9px;color:#fff;font-size:14px;cursor:pointer;font-family:var(--font);font-weight:600;transition:all 0.2s}
+.chat-send:hover{background:#e02a5a}
+.chat-send:disabled{background:var(--bg4);cursor:default}
+.chat-quick{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.quick-btn{font-size:11px;padding:4px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;color:var(--text2);cursor:pointer;font-family:var(--font);transition:all 0.2s}
+.quick-btn:hover{border-color:var(--rose);color:var(--rose)}
+
+/* HELPERS */
+.helper-card{padding:14px 16px;background:var(--bg2);border-radius:var(--r2);border:1px solid var(--border);margin-bottom:10px;cursor:pointer;transition:all 0.2s}
+.helper-card:hover{border-color:var(--border3);background:var(--bg3)}
+.helper-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.online-indicator{position:absolute;bottom:1px;right:1px;width:9px;height:9px;border-radius:50%;background:var(--green);border:2px solid var(--bg2)}
+
+/* ADMIN */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{background:var(--bg3);border-radius:10px;padding:13px 15px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.stat-card:hover{border-color:var(--border3);transform:translateY(-1px)}
+.stat-label{font-size:10px;color:var(--text3);font-weight:500;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:4px}
+.stat-val{font-size:24px;font-weight:700;font-family:var(--mono)}
+.stat-change{font-size:10px;color:var(--text3);margin-top:3px}
+.system-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg3);border-radius:9px;margin-bottom:6px;border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.system-row:hover{border-color:var(--border3)}
+.online-tag{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--green);font-weight:600}
+.online-tag-dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+.zone-row{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--bg2);border-radius:9px;border:1px solid var(--border);margin-bottom:6px;cursor:pointer;transition:all 0.2s}
+.zone-row:hover{border-color:var(--border3);background:var(--bg3)}
+
+/* BUTTONS */
+.btn{padding:9px 18px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.2s;border:none}
+.btn-primary{background:var(--rose);color:#fff}
+.btn-primary:hover{background:#e02a5a;box-shadow:0 0 20px var(--roseglow)}
+.btn-secondary{background:var(--bg3);color:var(--text2);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--border3);color:var(--text)}
+.btn-sm{padding:7px 14px;font-size:12px}
+.btn-full{width:100%;display:block;text-align:center}
+
+/* EVIDENCE */
+.evidence-card{padding:14px 16px;background:var(--bg2);border-radius:var(--r2);border:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.evidence-card:hover{border-color:var(--border3)}
+
+/* OFFLINE BANNER */
+.offline-banner{background:linear-gradient(135deg,rgba(79,142,247,0.08),rgba(164,99,242,0.08));border:1px solid rgba(79,142,247,0.2);border-radius:var(--r);padding:12px 16px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;transition:all 0.2s}
+.offline-banner:hover{background:linear-gradient(135deg,rgba(79,142,247,0.14),rgba(164,99,242,0.12))}
+
+/* TIME CHANGER */
+.time-picker-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+.time-display{font-family:var(--mono);font-size:32px;font-weight:700;text-align:center;letter-spacing:2px;padding:10px 0;cursor:pointer;transition:color 0.2s}
+.time-display:hover{color:var(--rose)}
+.time-period-row{display:flex;gap:6px;justify-content:center;margin-top:8px}
+.period-btn{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid var(--border);background:var(--bg4);color:var(--text2);cursor:pointer;font-family:var(--font);transition:all 0.2s}
+.period-btn.active{background:rgba(255,53,103,0.15);border-color:var(--rose);color:var(--rose)}
+.time-preset-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.time-preset{padding:7px;border-radius:8px;font-size:11px;font-weight:600;border:1px solid var(--border);background:var(--bg4);color:var(--text2);cursor:pointer;font-family:var(--font);transition:all 0.2s;text-align:center}
+.time-preset:hover{border-color:var(--rose2);color:var(--rose2)}
+.time-input-row{display:flex;gap:8px;margin-top:10px;align-items:center;justify-content:center}
+.time-num-input{width:64px;padding:8px 6px;background:var(--bg4);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:18px;font-family:var(--mono);font-weight:700;text-align:center;outline:none;transition:border-color 0.2s}
+.time-num-input:focus{border-color:var(--rose)}
+.time-sep{font-size:22px;font-family:var(--mono);font-weight:700;color:var(--text2)}
+
+/* MEDIA VAULT */
+.vault-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;margin-bottom:7px;cursor:pointer;transition:all 0.2s}
+.vault-item:hover{border-color:var(--border3);background:var(--bg4)}
+.vault-thumb{width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0}
+.vault-thumb-icon{width:36px;height:36px;border-radius:8px;background:rgba(255,53,103,0.1);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.rec-pulse{width:9px;height:9px;border-radius:50%;background:var(--rose);animation:blink 0.8s ease-in-out infinite;display:inline-block;margin-right:5px}
+.capture-btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.capture-btn{padding:18px 10px;border-radius:12px;background:var(--bg3);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;font-family:var(--font);color:var(--text2);font-size:12px;font-weight:600;transition:all 0.2s}
+.capture-btn:hover{border-color:var(--rose2);color:var(--rose2);background:rgba(255,53,103,0.05)}
+.capture-btn.recording-active{border-color:var(--rose);background:rgba(255,53,103,0.1);color:var(--rose)}
+.waveform{display:flex;align-items:center;gap:2px;height:20px}
+.wave-bar{width:3px;border-radius:2px;background:var(--rose);animation:wave-animate var(--d,0.6s) ease-in-out infinite alternate}
+@keyframes wave-animate{from{height:3px}to{height:var(--h,16px)}}
+.photo-preview-wrap{position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:var(--bg4);border:1px solid var(--border);margin-top:10px}
+.photo-preview-wrap video,.photo-preview-wrap canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.shutter-btn{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:48px;height:48px;border-radius:50%;background:#fff;border:3px solid rgba(255,255,255,0.3);cursor:pointer;transition:transform 0.1s}
+.shutter-btn:active{transform:translateX(-50%) scale(0.88)}
+.switch-cam-btn{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;color:#fff;font-size:14px;cursor:pointer}
+
+/* AUTH */
+.auth-screen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden}
+.auth-bg-orb{position:absolute;border-radius:50%;pointer-events:none}
+.auth-orb1{width:600px;height:600px;top:-300px;left:-200px;background:radial-gradient(circle,rgba(255,53,103,0.07) 0%,transparent 70%)}
+.auth-orb2{width:500px;height:500px;bottom:-250px;right:-150px;background:radial-gradient(circle,rgba(79,142,247,0.05) 0%,transparent 70%)}
+.auth-card{width:100%;max-width:420px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r3);padding:32px;position:relative;z-index:1}
+.auth-logo{text-align:center;margin-bottom:32px}
+.auth-shield{width:72px;height:72px;margin:0 auto 14px;background:linear-gradient(135deg,var(--rose),#c0204a);border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:32px;box-shadow:0 0 40px rgba(255,53,103,0.4);animation:float 4s ease-in-out infinite;cursor:pointer}
+.auth-title{font-size:28px;font-weight:700;letter-spacing:-0.5px}
+.auth-title span{color:var(--rose)}
+.auth-subtitle{font-size:13px;color:var(--text2);margin-top:4px}
+.role-tabs{display:flex;gap:4px;background:var(--bg3);border-radius:11px;padding:4px;margin-bottom:20px}
+.role-tab{flex:1;padding:8px 0;border-radius:8px;border:none;background:transparent;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.2s;text-transform:capitalize}
+.role-tab.active{background:var(--rose);color:#fff}
+.mode-tabs{display:flex;gap:4px;margin-bottom:20px}
+.mode-tab{flex:1;padding:8px 0;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;font-family:var(--font);transition:all 0.2s}
+.mode-tab.active{border-color:var(--rose);color:var(--rose);background:rgba(255,53,103,0.08)}
+.form-group{margin-bottom:14px}
+.form-label{font-size:12px;font-weight:500;color:var(--text2);margin-bottom:6px;display:block}
+.form-input{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:9px;padding:11px 14px;color:var(--text);font-size:14px;font-family:var(--font);outline:none;transition:border-color 0.2s}
+.form-input:focus{border-color:rgba(255,53,103,0.4)}
+.form-input::placeholder{color:var(--text4)}
+.otp-input{text-align:center;letter-spacing:16px;font-family:var(--mono);font-size:22px}
+.auth-btn{width:100%;padding:12px;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px}
+.auth-btn.primary{background:var(--rose);color:#fff}
+.auth-btn.primary:hover{background:#e02a5a;box-shadow:0 0 24px var(--roseglow)}
+.auth-btn:disabled{background:var(--bg4);color:var(--text3);cursor:default}
+.back-link{text-align:center;margin-top:12px;font-size:12px;color:var(--text3);cursor:pointer;transition:color 0.2s}
+.back-link:hover{color:var(--rose)}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top:2px solid #fff;border-radius:50%;animation:spin 0.7s linear infinite}
+.auth-note{font-size:11px;color:var(--text3);text-align:center;margin-top:14px}
+
+/* AVATAR */
+.avatar{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;position:relative}
+
+/* SECTION HEADER */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.section-title{font-size:14px;font-weight:600;color:var(--text)}
+.section-action{font-size:12px;color:var(--rose);cursor:pointer;background:none;border:none;font-family:var(--font);transition:color 0.2s}
+.section-action:hover{color:var(--rose2)}
+.divider{height:1px;background:var(--border);margin:14px 0}
+
+/* TRACKED */
+.tracked-card{padding:16px;background:var(--bg2);border-radius:var(--r2);border:1px solid var(--border);margin-bottom:10px;cursor:pointer;transition:all 0.2s}
+.tracked-card:hover{border-color:var(--border3)}
+.tracked-card.critical{border-color:var(--border2);box-shadow:0 0 20px var(--roseglow)}
+.tracked-actions{display:flex;gap:7px;margin-top:12px}
+.tracked-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.meta-cell{background:var(--bg3);border-radius:8px;padding:8px 10px;cursor:pointer;transition:all 0.2s}
+.meta-cell:hover{background:var(--bg4)}
+.meta-key{font-size:10px;color:var(--text3);margin-bottom:2px}
+.meta-val{font-size:12px;color:var(--text);font-family:var(--mono)}
+
+/* ADMIN TABS */
+.tab-row{display:flex;gap:4px;background:var(--bg3);border-radius:11px;padding:4px;margin-bottom:14px}
+.tab-btn{flex:1;padding:7px 0;border-radius:8px;border:none;background:transparent;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.2s;text-transform:capitalize}
+.tab-btn.active{background:var(--rose);color:#fff}
+.prog-bar{height:5px;background:var(--bg4);border-radius:3px;overflow:hidden;margin-top:6px}
+.prog-fill{height:100%;border-radius:3px;transition:width 1s ease}
+
+/* BATTERY */
+.battery-box{display:flex;align-items:center;gap:8px}
+.battery-outer{width:36px;height:18px;border:1.5px solid var(--text3);border-radius:3px;position:relative;padding:2px}
+.battery-outer::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:3px;height:8px;background:var(--text3);border-radius:0 2px 2px 0}
+.battery-inner{height:100%;border-radius:1px;transition:width 0.5s,background 0.5s}
+
+/* COMM MODULE */
+.comm-row{display:flex;gap:8px;margin-bottom:10px}
+.comm-btn{flex:1;padding:10px 8px;border-radius:10px;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;font-family:var(--font);font-size:12px;font-weight:600;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:4px}
+.comm-btn:hover{border-color:var(--border3);color:var(--text);transform:translateY(-1px)}
+.comm-btn.call:hover{border-color:var(--green);color:var(--green)}
+.comm-btn.msg:hover{border-color:var(--blue);color:var(--blue)}
+.comm-btn.sos-comm:hover{border-color:var(--rose);color:var(--rose)}
+.comm-btn .comm-icon{font-size:18px}
+
+/* MOVEMENT HISTORY */
+.movement-item{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg2);border-radius:8px;border-left:3px solid transparent;margin-bottom:6px;cursor:pointer;transition:all 0.2s}
+.movement-item:hover{background:var(--bg3)}
+.movement-item.anomaly{border-left-color:var(--rose);background:rgba(255,53,103,0.05)}
+.movement-item.normal{border-left-color:var(--green)}
+.movement-item.warning{border-left-color:var(--amber);background:rgba(245,166,35,0.04)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:500;display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px);animation:fade-up 0.2s ease}
+.modal-sheet{width:100%;max-width:480px;background:var(--bg2);border-radius:var(--r3) var(--r3) 0 0;padding:20px;border:1px solid var(--border);border-bottom:none;animation:slideDown 0.3s ease;max-height:85vh;overflow-y:auto}
+.modal-handle{width:40px;height:4px;background:var(--bg4);border-radius:2px;margin:0 auto 16px}
+.modal-title{font-size:16px;font-weight:700;margin-bottom:14px}
+.modal-close{position:absolute;top:20px;right:20px;width:28px;height:28px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.2s}
+.modal-close:hover{border-color:var(--rose);color:var(--rose)}
+
+/* PREDICTED PATH */
+.predicted-path-card{background:linear-gradient(135deg,rgba(164,99,242,0.08),rgba(79,142,247,0.05));border:1px solid rgba(164,99,242,0.25);border-radius:var(--r2);padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:all 0.2s}
+.predicted-path-card:hover{background:linear-gradient(135deg,rgba(164,99,242,0.14),rgba(79,142,247,0.1))}
+
+/* MISC */
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+.flex-center{display:flex;align-items:center;justify-content:center}
+.flex-col{display:flex;flex-direction:column}
+.gap-6{gap:6px}.gap-8{gap:8px}.gap-10{gap:10px}.gap-12{gap:12px}
+.mt-8{margin-top:8px}.mt-12{margin-top:12px}.mt-14{margin-top:14px}
+.mb-6{margin-bottom:6px}.mb-10{margin-bottom:10px}.mb-14{margin-bottom:14px}
+.text-sm{font-size:12px;color:var(--text2)}.text-xs{font-size:11px;color:var(--text3)}
+.mono{font-family:var(--mono)}.fw-600{font-weight:600}.w-full{width:100%}
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-bg-orb auth-orb1"></div>
+  <div class="auth-bg-orb auth-orb2"></div>
+  <div class="auth-card slide-in">
+    <div class="auth-logo">
+      <div class="auth-shield" onclick="showToast('🛡 SheShield — AI Safety Platform')">🛡</div>
+      <div class="auth-title">She<span>Shield</span></div>
+      <div class="auth-subtitle">AI-powered women's safety platform</div>
+    </div>
+    <div class="role-tabs" id="role-tabs">
+      <button class="role-tab active" data-role="user">User</button>
+      <button class="role-tab" data-role="guardian">Guardian</button>
+      <button class="role-tab" data-role="admin">Admin</button>
+    </div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="tab-login" onclick="switchMode('login')">Sign In</button>
+      <button class="mode-tab" id="tab-signup" onclick="switchMode('signup')">Sign Up</button>
+    </div>
+    <div id="auth-step1">
+      <div id="name-group" class="form-group" style="display:none">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="form-input" id="auth-name" placeholder="Your full name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="auth-email" placeholder="you@example.com" onkeydown="if(event.key==='Enter')sendOTP()">
+      </div>
+      <button class="auth-btn primary" id="btn-send-otp" onclick="sendOTP()">Send OTP →</button>
+      <p class="auth-note">Enter any email. OTP will be <strong style="color:var(--rose)">1234</strong></p>
+    </div>
+    <div id="auth-step2" style="display:none">
+      <div class="form-group">
+        <label class="form-label">One-Time Password</label>
+        <input type="text" class="form-input otp-input" id="auth-otp" placeholder="1 2 3 4" maxlength="4" onkeydown="if(event.key==='Enter')verifyOTP()">
+      </div>
+      <button class="auth-btn primary" id="btn-verify" onclick="verifyOTP()">Verify & Enter →</button>
+      <p class="back-link" onclick="backToStep1()">← Back</p>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" style="display:none">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <a class="topbar-logo" onclick="switchScreen('dashboard')">
+      <div class="logo-icon">🛡</div>
+      <span class="logo-text">She<span>Shield</span></span>
+    </a>
+    <div class="topbar-right">
+      <div class="live-badge" onclick="showToast('📡 Connected to SheShield Network — All systems nominal')"><span class="live-dot"></span>Live</div>
+      <div class="live-badge" id="topbar-clock" style="background:rgba(79,142,247,0.1);border-color:rgba(79,142,247,0.2);color:var(--blue);cursor:pointer;font-family:var(--mono)" onclick="showTimeChanger()">🕐 <span id="clock-display">--:--</span></div>
+      <div class="battery-box" id="battery-display" onclick="showBatteryModal()">
+        <div class="battery-outer"><div class="battery-inner" id="bat-inner" style="width:68%;background:var(--green)"></div></div>
+        <span style="font-size:11px;color:var(--text2);font-family:var(--mono)" id="bat-pct">68%</span>
+      </div>
+      <div class="user-chip" id="user-chip" onclick="showProfileModal()">
+        <div class="user-avatar" id="topbar-avatar" style="background:rgba(255,53,103,0.2);color:var(--rose)">P</div>
+        <span style="font-size:12px;color:var(--text2)" id="topbar-name">Priya</span>
+      </div>
+      <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div id="screen-dashboard" class="screen active">
+
+      <!-- Anomaly Alert (shown when triggered) -->
+      <div id="anomaly-banner" class="anomaly-banner mb-14" style="display:none" onclick="showAnomalyModal()">
+        <div class="flex-between">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:16px">🚨</span>
+            <div>
+              <div style="font-size:13px;font-weight:700;color:var(--rose)" id="anomaly-title">Movement Anomaly Detected</div>
+              <div class="text-xs" id="anomaly-desc">Unusual stop detected — tap for details</div>
+            </div>
+          </div>
+          <span style="font-size:11px;color:var(--rose);font-weight:600">VIEW →</span>
+        </div>
+      </div>
+
+      <!-- Risk Score -->
+      <div class="score-card mb-14" onclick="showRiskModal()">
+        <div class="flex-between mb-6">
+          <div>
+            <div style="font-size:11px;color:var(--text2);font-weight:500;letter-spacing:0.5px;margin-bottom:4px">CURRENT RISK SCORE · LIVE</div>
+            <div class="flex-center gap-8" style="justify-content:flex-start;align-items:baseline">
+              <span class="score-number" id="score-display">62</span>
+              <span style="font-size:13px;color:var(--text3)">/100</span>
+            </div>
+          </div>
+          <div style="text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+            <span class="risk-badge medium" id="risk-badge-main" onclick="event.stopPropagation();showRiskModal()"><span class="dot"></span>Medium Risk</span>
+            <span style="font-size:11px;color:var(--text2);cursor:pointer" onclick="event.stopPropagation();switchScreen('map')">📍 Indiranagar, BLR</span>
+          </div>
+        </div>
+        <div class="score-bar-track">
+          <div class="score-bar-fill" id="score-bar" style="width:62%"></div>
+        </div>
+        <div class="score-factors">
+          <div class="factor-cell" onclick="event.stopPropagation();showToast('🕐 Night hours (10 PM–5 AM) increase risk by 35%')"><div class="factor-label">Time</div><div class="factor-value">Night</div></div>
+          <div class="factor-cell" onclick="event.stopPropagation();showToast('👥 Medium crowd density detected in your area')"><div class="factor-label">Crowd</div><div class="factor-value">Medium</div></div>
+          <div class="factor-cell" onclick="event.stopPropagation();showToast('📊 3 incidents reported in this area this week')"><div class="factor-label">History</div><div class="factor-value">3 reports</div></div>
+        </div>
+      </div>
+
+      <!-- Quick Communication -->
+      <div class="card mb-14">
+        <div class="section-header" style="margin-bottom:10px">
+          <span class="section-title">Quick Contact</span>
+          <button class="section-action" onclick="switchScreen('helpers')">All Helpers →</button>
+        </div>
+        <div class="comm-row">
+          <button class="comm-btn call" onclick="showCallModal()"><span class="comm-icon">📞</span>Call Guardian</button>
+          <button class="comm-btn msg" onclick="showMessageModal()"><span class="comm-icon">💬</span>Send Location</button>
+          <button class="comm-btn sos-comm" onclick="showEmergencyBroadcast()"><span class="comm-icon">🆘</span>Broadcast</button>
+        </div>
+      </div>
+
+      <!-- SOS -->
+      <div class="card mb-14" style="text-align:center;padding:22px">
+        <div id="sos-idle">
+          <div class="sos-wrap">
+            <div class="sos-rings">
+              <div class="sos-ring r1"></div>
+              <div class="sos-ring r2"></div>
+              <button class="sos-btn" id="sos-btn" onmousedown="startSOS()" onmouseup="cancelSOS()" onmouseleave="cancelSOS()" ontouchstart="startSOS(this)" ontouchend="cancelSOS()">SOS</button>
+            </div>
+            <div class="sos-hint">Hold 3 seconds to activate</div>
+          </div>
+        </div>
+        <div id="sos-active" style="display:none" class="sos-active-banner">
+          <div style="font-size:14px;font-weight:700;color:var(--rose);margin-bottom:4px">🚨 SOS ACTIVE — Help is Coming</div>
+          <div class="text-sm mb-10">Live location sent to all guardians & nearby helpers</div>
+          <div style="display:flex;gap:8px;justify-content:center">
+            <button class="btn btn-secondary btn-sm" onclick="cancelSOSActive()">Cancel SOS</button>
+            <button class="btn btn-sm" style="background:rgba(79,142,247,0.15);border:1px solid rgba(79,142,247,0.3);color:var(--blue);font-family:var(--font);font-size:12px;font-weight:600;border-radius:9px;cursor:pointer" onclick="showToast('🚔 Emergency services notified at your GPS location')">Call 100</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Map Preview -->
+      <div class="mb-14">
+        <div class="section-header">
+          <span class="section-title">Live Safety Map</span>
+          <button class="section-action" onclick="switchScreen('map')">Full Map →</button>
+        </div>
+        <div id="map-dash" class="map-container" onclick="switchScreen('map')">
+          <svg class="map-svg" id="dash-map-svg" viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice">
+            <defs>
+              <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(74,82,112,0.3)" stroke-width="0.5"/></pattern>
+              <radialGradient id="userGrad" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff3567" stop-opacity="0.4"/><stop offset="100%" stop-color="#ff3567" stop-opacity="0"/></radialGradient>
+            </defs>
+            <rect width="400" height="220" fill="url(#grid)"/>
+            <ellipse cx="120" cy="80" rx="70" ry="42" fill="#22d07a" fill-opacity="0.18" stroke="#22d07a" stroke-width="0.8"/>
+            <ellipse cx="100" cy="155" rx="55" ry="35" fill="#22d07a" fill-opacity="0.16" stroke="#22d07a" stroke-width="0.8"/>
+            <ellipse cx="280" cy="100" rx="50" ry="32" fill="#f5a623" fill-opacity="0.18" stroke="#f5a623" stroke-width="0.8"/>
+            <ellipse cx="65" cy="130" rx="38" ry="25" fill="#ff3567" fill-opacity="0.2" stroke="#ff3567" stroke-width="1"/>
+            <ellipse cx="340" cy="170" rx="45" ry="28" fill="#f5a623" fill-opacity="0.16" stroke="#f5a623" stroke-width="0.8"/>
+            <ellipse cx="50" cy="55" rx="32" ry="20" fill="#ff3567" fill-opacity="0.2" stroke="#ff3567" stroke-width="1"/>
+            <ellipse cx="210" cy="50" rx="55" ry="30" fill="#22d07a" fill-opacity="0.16" stroke="#22d07a" stroke-width="0.8"/>
+            <text x="120" y="83" text-anchor="middle" fill="#22d07a" font-size="9" font-family="DM Sans" opacity="0.9">MG Road</text>
+            <text x="280" y="103" text-anchor="middle" fill="#f5a623" font-size="9" font-family="DM Sans" opacity="0.9">Indiranagar</text>
+            <text x="65" y="133" text-anchor="middle" fill="#ff3567" font-size="8" font-family="DM Sans">Dark Zone</text>
+            <polyline points="200,120 220,95 240,78 265,62 295,50" fill="none" stroke="#4f8ef7" stroke-width="2" stroke-dasharray="6,3" opacity="0.7"/>
+            <!-- Animated user dot -->
+            <circle cx="200" cy="120" r="22" fill="url(#userGrad)"/>
+            <circle cx="200" cy="120" r="22" fill="#ff3567" fill-opacity="0.08" stroke="none"/>
+            <circle id="dash-user-dot" cx="200" cy="120" r="7" fill="#ff3567" stroke="white" stroke-width="1.5"/>
+            <circle cx="200" cy="120" r="14" fill="none" stroke="#ff3567" stroke-width="0.8" stroke-opacity="0.3" stroke-dasharray="3,3"/>
+            <circle cx="295" cy="50" r="5" fill="#4f8ef7" stroke="white" stroke-width="1.5"/>
+            <text x="310" y="53" fill="#4f8ef7" font-size="9" font-family="DM Sans">Destination</text>
+          </svg>
+          <div class="map-legend">
+            <div class="legend-item" onclick="event.stopPropagation();showToast('🟢 Safe zones: High crowd, good lighting')"><span class="legend-dot" style="background:var(--green)"></span>Safe</div>
+            <div class="legend-item" onclick="event.stopPropagation();showToast('🟡 Medium risk: Moderate crowd, some dark areas')"><span class="legend-dot" style="background:var(--amber)"></span>Medium</div>
+            <div class="legend-item" onclick="event.stopPropagation();showToast('🔴 High risk: Low crowd, dark, incident history')"><span class="legend-dot" style="background:var(--rose)"></span>High</div>
+            <div class="legend-item" onclick="event.stopPropagation();showToast('🔵 Blue line = AI-recommended safest route')"><span style="display:inline-block;width:14px;height:2px;background:var(--blue);margin-right:2px"></span>Route</div>
+          </div>
+          <div class="map-controls">
+            <button class="map-ctrl-btn" onclick="event.stopPropagation();showToast('📍 Current GPS: 12.9716° N, 77.5946° E')">⊕</button>
+            <button class="map-ctrl-btn" onclick="event.stopPropagation();showToast('🔄 Map refreshed with latest risk data')">↻</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Movement Anomaly Detection -->
+      <div class="card mb-14">
+        <div class="section-header">
+          <span class="section-title">Movement Analysis</span>
+          <span class="badge info">AI Active</span>
+        </div>
+        <div id="movement-history">
+          <div class="movement-item normal" onclick="showMovementDetail('normal','22:15','MG Road → Indiranagar','Normal commute pattern. Speed: 18 km/h. Route matches historical data.')">
+            <span style="font-size:12px">🟢</span>
+            <div style="flex:1"><div style="font-size:12px;font-weight:500">Normal movement</div><div class="text-xs">22:15 · MG Road → Indiranagar</div></div>
+            <span class="text-xs">14 min ago</span>
+          </div>
+          <div class="movement-item warning" onclick="showMovementDetail('warning','22:08','Unexpected stop','3-minute stop in a medium-risk area. No prior pattern match. Monitoring...')">
+            <span style="font-size:12px">🟡</span>
+            <div style="flex:1"><div style="font-size:12px;font-weight:500">Unexpected stop (3 min)</div><div class="text-xs">22:08 · Brigade Road</div></div>
+            <span class="text-xs">21 min ago</span>
+          </div>
+          <div class="movement-item anomaly" onclick="showMovementDetail('anomaly','21:52','Route deviation','Deviated 400m from usual route. Speed dropped to 1 km/h. Combined with night-time risk — alert triggered.')">
+            <span style="font-size:12px">🔴</span>
+            <div style="flex:1"><div style="font-size:12px;font-weight:600;color:var(--rose)">Route deviation detected</div><div class="text-xs">21:52 · Unexpected turn near Dark Zone</div></div>
+            <span class="badge danger" style="font-size:10px">Alert</span>
+          </div>
+          <div class="movement-item normal" onclick="showMovementDetail('normal','21:40','Work to commute','Left office. Speed: 22 km/h. Route: Normal. All clear.')">
+            <span style="font-size:12px">🟢</span>
+            <div style="flex:1"><div style="font-size:12px;font-weight:500">Left office — normal speed</div><div class="text-xs">21:40 · Koramangala</div></div>
+            <span class="text-xs">49 min ago</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Alerts -->
+      <div class="mb-14">
+        <div class="section-title mb-10">AI Danger Alerts</div>
+        <div id="alerts-list">
+          <div class="alert-item" onclick="showAlertDetail('⚠️ Medium Risk Zone','You are entering Indiranagar — medium risk. High crowd near MG Road recommended instead. Estimated safe zone: 0.4 km northeast.','warning')"><div class="alert-icon">⚠️</div><div class="alert-body"><div class="alert-msg">Entering medium-risk zone</div><div class="alert-time">2 min ago</div></div><span class="badge warning">Warning</span></div>
+          <div class="alert-item" onclick="showAlertDetail('🛣️ Safe Route Updated','AI re-calculated safest route via MG Road. New path avoids 2 high-risk zones. ETA to destination: 14 min.','info')"><div class="alert-icon">🛣️</div><div class="alert-body"><div class="alert-msg">Safe route re-calculated</div><div class="alert-time">5 min ago</div></div><span class="badge info">Route</span></div>
+          <div class="alert-item" onclick="showAlertDetail('🔴 Anomaly Alert','3-minute unusual stop detected at Brigade Road. Combined with deviation from normal route and night-time hours — risk elevated to High. Guardians have been notified.','danger')"><div class="alert-icon">🔴</div><div class="alert-body"><div class="alert-msg">Unusual stop detected (3 min)</div><div class="alert-time">12 min ago</div></div><span class="badge danger">AI Alert</span></div>
+          <div class="alert-item" onclick="showAlertDetail('✅ Guardian Notified','Meena received your live location and acknowledged. She is tracking your journey. ETA notification set for destination arrival.','success')"><div class="alert-icon">✅</div><div class="alert-body"><div class="alert-msg">Guardian Meena notified</div><div class="alert-time">15 min ago</div></div><span class="badge success">Done</span></div>
+        </div>
+      </div>
+
+      <!-- Guardians -->
+      <div class="mb-14">
+        <div class="section-header">
+          <span class="section-title">My Guardians</span>
+          <button class="section-action" onclick="showAddGuardian()">+ Add</button>
+        </div>
+        <div class="guardian-item" onclick="showGuardianContact('Meena','Mom','+91 98765 43210','Active','Online now — tracking your journey')">
+          <div class="avatar" style="width:34px;height:34px;background:rgba(34,208,122,0.15);color:var(--green);font-size:13px">M</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:500">Meena (Mom)</div><div class="text-xs">Online — tracking you</div></div>
+          <span class="g-status" style="color:var(--green)">Active</span>
+        </div>
+        <div class="guardian-item" onclick="showGuardianContact('Riya','Sister','+91 87654 32109','Active','Online — last seen your location 3 min ago')">
+          <div class="avatar" style="width:34px;height:34px;background:rgba(34,208,122,0.15);color:var(--green);font-size:13px">R</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:500">Riya (Sister)</div><div class="text-xs">Online — last update 3 min</div></div>
+          <span class="g-status" style="color:var(--green)">Active</span>
+        </div>
+        <div class="guardian-item" onclick="showGuardianContact('Arjun','Friend','+91 76543 21098','Away','Away — will be notified if SOS triggered')">
+          <div class="avatar" style="width:34px;height:34px;background:rgba(74,82,112,0.3);color:var(--text2);font-size:13px">A</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:500">Arjun (Friend)</div><div class="text-xs">Away — SOS alert enabled</div></div>
+          <span class="g-status" style="color:var(--text3)">Away</span>
+        </div>
+      </div>
+
+      <!-- Evidence -->
+      <div class="evidence-card mb-14" onclick="expandEvidence()">
+        <div class="flex-between mb-10">
+          <div class="section-title" style="margin:0">Auto Evidence</div>
+          <span class="badge" id="ev-badge" style="background:rgba(79,142,247,0.12);color:var(--blue)">Standby</span>
+        </div>
+        <p class="text-sm mb-10">Activate to silently capture audio & video. Encrypted upload to your cloud.</p>
+        <div style="display:flex;gap:8px" onclick="event.stopPropagation()">
+          <button class="btn btn-secondary btn-sm" style="flex:1" id="ev-rec-btn" onclick="toggleRecording()">⏺ Record</button>
+          <button class="btn btn-secondary btn-sm" style="flex:1" onclick="showToast('📷 Photo captured & uploaded securely to your evidence vault')">📷 Capture</button>
+          <button class="btn btn-secondary btn-sm" style="flex:1" onclick="showToast('📤 Evidence vault: 3 files stored securely in cloud')">📂 Vault</button>
+        </div>
+      </div>
+
+      <!-- Offline / Battery Protection -->
+      <div class="offline-banner mb-14" onclick="showOfflineModal()">
+        <span style="font-size:18px;flex-shrink:0">📡</span>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;margin-bottom:3px">Offline & Low Battery Protection — Active</div>
+          <div class="text-sm">Auto-sends last location + predicted path to guardians if offline or battery &lt;10%.</div>
+        </div>
+        <span style="font-size:11px;color:var(--blue);font-weight:600">Details →</span>
+      </div>
+    </div>
+
+    <!-- ══ MAP SCREEN ══ -->
+    <div id="screen-map" class="screen">
+      <div class="flex-between mb-10">
+        <div style="font-size:17px;font-weight:700">Live Safety Map</div>
+        <span class="risk-badge medium" id="map-risk-badge" onclick="showRiskModal()"><span class="dot"></span>Medium Risk</span>
+      </div>
+
+      <!-- Map Filters -->
+      <div style="display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;padding-bottom:4px">
+        <button class="quick-btn active-filter" id="filter-all" onclick="setMapFilter('all',this)" style="white-space:nowrap;border-color:var(--rose);color:var(--rose)">All Zones</button>
+        <button class="quick-btn" id="filter-safe" onclick="setMapFilter('safe',this)" style="white-space:nowrap">🟢 Safe</button>
+        <button class="quick-btn" id="filter-medium" onclick="setMapFilter('medium',this)" style="white-space:nowrap">🟡 Medium</button>
+        <button class="quick-btn" id="filter-high" onclick="setMapFilter('high',this)" style="white-space:nowrap">🔴 High</button>
+        <button class="quick-btn" id="filter-route" onclick="setMapFilter('route',this)" style="white-space:nowrap">🔵 Route</button>
+        <button class="quick-btn" id="filter-predicted" onclick="setMapFilter('predicted',this)" style="white-space:nowrap">🟣 Predicted Path</button>
+      </div>
+
+      <div class="map-container mb-14" style="padding-bottom:65%">
+        <svg class="map-svg" id="main-map-svg" viewBox="0 0 400 260" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <pattern id="grid2" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(74,82,112,0.3)" stroke-width="0.5"/></pattern>
+            <radialGradient id="userGrad2" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ff3567" stop-opacity="0.4"/><stop offset="100%" stop-color="#ff3567" stop-opacity="0"/></radialGradient>
+          </defs>
+          <rect width="400" height="260" fill="url(#grid2)"/>
+          <!-- Safe Zones -->
+          <ellipse class="zone-safe" cx="120" cy="90" rx="75" ry="48" fill="#22d07a" fill-opacity="0.18" stroke="#22d07a" stroke-width="0.8" onclick="showZoneInfo('MG Road','Safe','High crowd density, well-lit streets, police patrol active')"/>
+          <ellipse class="zone-safe" cx="105" cy="175" rx="60" ry="38" fill="#22d07a" fill-opacity="0.16" stroke="#22d07a" stroke-width="0.8" onclick="showZoneInfo('Koramangala','Safe','Busy commercial area, CCTV coverage, 24hr activity')"/>
+          <ellipse class="zone-safe" cx="215" cy="55" rx="60" ry="34" fill="#22d07a" fill-opacity="0.16" stroke="#22d07a" stroke-width="0.8" onclick="showZoneInfo('Whitefield','Safe','Tech park area, good lighting, regular security')"/>
+          <!-- Medium Zones -->
+          <ellipse class="zone-medium" cx="285" cy="110" rx="55" ry="35" fill="#f5a623" fill-opacity="0.18" stroke="#f5a623" stroke-width="0.8" onclick="showZoneInfo('Indiranagar','Medium Risk','Moderate crowd, some dark alleys, exercise caution after 10 PM')"/>
+          <ellipse class="zone-medium" cx="345" cy="185" rx="48" ry="30" fill="#f5a623" fill-opacity="0.16" stroke="#f5a623" stroke-width="0.8" onclick="showZoneInfo('BTM Layout','Medium Risk','Mixed area, limited CCTV, some isolated stretches')"/>
+          <!-- High Risk Zones -->
+          <ellipse class="zone-high" cx="62" cy="145" rx="42" ry="28" fill="#ff3567" fill-opacity="0.2" stroke="#ff3567" stroke-width="1" onclick="showZoneInfo('Dark Zone','HIGH RISK','Low crowd, no street lighting, 4 incidents this week — AVOID')"/>
+          <ellipse class="zone-high" cx="48" cy="60" rx="36" ry="22" fill="#ff3567" fill-opacity="0.2" stroke="#ff3567" stroke-width="1" onclick="showZoneInfo('Industrial Area','HIGH RISK','Deserted after 8 PM, no CCTV, isolated roads')"/>
+          <!-- Zone Labels -->
+          <text x="120" y="93" text-anchor="middle" fill="#22d07a" font-size="9" font-family="DM Sans" opacity="0.9" style="pointer-events:none">MG Road</text>
+          <text x="105" y="178" text-anchor="middle" fill="#22d07a" font-size="8" font-family="DM Sans" opacity="0.9" style="pointer-events:none">Koramangala</text>
+          <text x="285" y="113" text-anchor="middle" fill="#f5a623" font-size="9" font-family="DM Sans" opacity="0.9" style="pointer-events:none">Indiranagar</text>
+          <text x="62" y="148" text-anchor="middle" fill="#ff3567" font-size="8" font-family="DM Sans" style="pointer-events:none">Dark Zone</text>
+          <text x="345" y="188" text-anchor="middle" fill="#f5a623" font-size="8" font-family="DM Sans" opacity="0.9" style="pointer-events:none">BTM Layout</text>
+          <text x="215" y="58" text-anchor="middle" fill="#22d07a" font-size="8" font-family="DM Sans" opacity="0.9" style="pointer-events:none">Whitefield</text>
+          <!-- Safe Route -->
+          <polyline id="safe-route" points="200,140 225,112 252,90 278,70 308,55" fill="none" stroke="#4f8ef7" stroke-width="2.5" stroke-dasharray="6,3" opacity="0.9" style="cursor:pointer" onclick="showToast('🔵 Safe Route: Via MG Road — 1.2 km, 14 min, High safety score')"/>
+          <!-- Alternate Route -->
+          <polyline id="alt-route" points="200,140 170,115 155,88 175,65 205,52 230,48 260,52 285,55" fill="none" stroke="#a463f2" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.5" style="cursor:pointer" onclick="showToast('🟣 Alternate route via Koramangala — slightly longer but safer at night')"/>
+          <!-- Predicted Path -->
+          <polyline id="predicted-path" points="200,140 185,158 170,175 155,192 145,210" fill="none" stroke="#a463f2" stroke-width="2" stroke-dasharray="3,5" opacity="0" style="cursor:pointer" onclick="showToast('🟣 Predicted path based on recent movement pattern — shared with guardians')"/>
+          <!-- User Position -->
+          <circle cx="200" cy="140" r="24" fill="url(#userGrad2)"/>
+          <circle id="map-user-dot" cx="200" cy="140" r="8" fill="#ff3567" stroke="white" stroke-width="2"/>
+          <circle cx="200" cy="140" r="16" fill="none" stroke="#ff3567" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="3,3"/>
+          <!-- Destination -->
+          <circle cx="308" cy="55" r="6" fill="#4f8ef7" stroke="white" stroke-width="1.5" style="cursor:pointer" onclick="showToast('📍 Destination: Home — 1.2 km via safe route')"/>
+          <text x="318" y="58" fill="#4f8ef7" font-size="9" font-family="DM Sans" style="pointer-events:none">Destination</text>
+          <!-- Helper dots -->
+          <circle class="helper-dot" cx="142" cy="95" r="5" fill="#22d07a" stroke="white" stroke-width="1.5" style="cursor:pointer" onclick="showToast('👤 Priya S. — Verified Helper · 0.2 km · Online')"/>
+          <circle class="helper-dot" cx="170" cy="130" r="5" fill="#22d07a" stroke="white" stroke-width="1.5" style="cursor:pointer" onclick="showToast('👤 Anjali M. — Safety Volunteer · 0.5 km · Online')"/>
+          <circle class="helper-dot" cx="250" cy="125" r="5" fill="#4f8ef7" stroke="white" stroke-width="1.5" style="cursor:pointer" onclick="showToast('🚔 Officer Kumar — Police · 0.8 km · On duty')"/>
+        </svg>
+        <div class="map-legend">
+          <div class="legend-item" onclick="showToast('🟢 Safe zone: Low incident rate, good crowd density')"><span class="legend-dot" style="background:var(--green)"></span>Safe</div>
+          <div class="legend-item" onclick="showToast('🟡 Medium risk zone: Exercise caution')"><span class="legend-dot" style="background:var(--amber)"></span>Medium</div>
+          <div class="legend-item" onclick="showToast('🔴 High risk zone: Avoid if possible')"><span class="legend-dot" style="background:var(--rose)"></span>High</div>
+          <div class="legend-item" onclick="showToast('🔵 AI-recommended safest route')"><span style="display:inline-block;width:14px;height:2px;background:var(--blue);margin-right:2px"></span>Safe</div>
+          <div class="legend-item" onclick="showToast('🟢 Verified helpers online nearby')"><span class="legend-dot" style="background:var(--green);border:1.5px solid white"></span>Helper</div>
+        </div>
+        <div class="map-controls">
+          <button class="map-ctrl-btn" onclick="showToast('📍 GPS: 12.9716° N, 77.5946° E · Accuracy: ±3m')">⊕</button>
+          <button class="map-ctrl-btn" onclick="showToast('🔄 Map refreshed — Risk data updated 1 min ago')">↻</button>
+          <button class="map-ctrl-btn" onclick="showToast('📡 Sharing live location with 2 guardians')">📡</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+        <div class="card" onclick="showToast('🔵 Navigate: Via MG Road — Tap for turn-by-turn directions')" style="cursor:pointer"><div class="text-xs mb-6">SAFE ROUTE</div><div style="font-size:14px;font-weight:600;color:var(--blue)">Via MG Road</div><div class="text-xs mt-6">1.2 km · 14 min</div></div>
+        <div class="card" onclick="showToast('⚠️ Avoid Industrial Zone — 4 incidents this week, no lighting')" style="cursor:pointer"><div class="text-xs mb-6">AVOID</div><div style="font-size:14px;font-weight:600;color:var(--rose)">Industrial Zone</div><div class="text-xs mt-6">High risk · No crowd</div></div>
+      </div>
+
+      <!-- Predicted Path Card -->
+      <div class="predicted-path-card" onclick="togglePredictedPath()">
+        <div class="flex-between">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:16px">🟣</span>
+            <div>
+              <div style="font-size:13px;font-weight:600;color:var(--purple)">Predicted Movement Path</div>
+              <div class="text-xs">Based on past patterns — shared with guardians</div>
+            </div>
+          </div>
+          <button class="btn btn-sm" style="background:rgba(164,99,242,0.15);color:var(--purple);border:1px solid rgba(164,99,242,0.3);font-family:var(--font);border-radius:9px;cursor:pointer;font-size:11px;font-weight:600" id="pred-path-btn">Show Path</button>
+        </div>
+      </div>
+
+      <div class="section-title mb-10">Zone Analysis</div>
+      <div class="zone-row" onclick="showZoneInfo('MG Road','Safe','High crowd density, well-lit streets, active police patrol. Safe to travel at all hours.')"><div class="flex-center gap-8" style="justify-content:flex-start"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span><span style="font-size:13px">MG Road</span></div><div class="flex-center gap-8"><span class="text-xs">High crowd</span><span class="risk-badge low"><span class="dot"></span>Low Risk</span></div></div>
+      <div class="zone-row" onclick="showZoneInfo('Koramangala','Safe','Busy commercial area, 24hr activity, full CCTV coverage. Safe zone.')"><div class="flex-center gap-8" style="justify-content:flex-start"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span><span style="font-size:13px">Koramangala</span></div><div class="flex-center gap-8"><span class="text-xs">High crowd</span><span class="risk-badge low"><span class="dot"></span>Low Risk</span></div></div>
+      <div class="zone-row" onclick="showZoneInfo('Indiranagar','Medium Risk','Moderate crowd after 10 PM. Some dark alleys near the back streets. Caution advised.')"><div class="flex-center gap-8" style="justify-content:flex-start"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block"></span><span style="font-size:13px">Indiranagar</span></div><div class="flex-center gap-8"><span class="text-xs">Medium crowd</span><span class="risk-badge medium"><span class="dot"></span>Medium Risk</span></div></div>
+      <div class="zone-row" onclick="showZoneInfo('Dark Zone','HIGH RISK','⚠️ AVOID — No lighting, isolated, 4 incidents this week. Do not enter alone.')"><div class="flex-center gap-8" style="justify-content:flex-start"><span style="width:8px;height:8px;border-radius:50%;background:var(--rose);display:inline-block"></span><span style="font-size:13px">Dark Zone</span></div><div class="flex-center gap-8"><span class="text-xs">Low crowd</span><span class="risk-badge high"><span class="dot"></span>High Risk</span></div></div>
+      <div class="zone-row" onclick="showZoneInfo('BTM Layout','Medium Risk','Mixed residential/commercial. Limited CCTV in back lanes. Moderate risk after 11 PM.')"><div class="flex-center gap-8" style="justify-content:flex-start"><span style="width:8px;height:8px;border-radius:50%;background:var(--amber);display:inline-block"></span><span style="font-size:13px">BTM Layout</span></div><div class="flex-center gap-8"><span class="text-xs">Medium crowd</span><span class="risk-badge medium"><span class="dot"></span>Medium Risk</span></div></div>
+      <div class="zone-row" onclick="showZoneInfo('Whitefield','Safe','Tech park area, well-lit, regular security patrols, high footfall.')"><div class="flex-center gap-8" style="justify-content:flex-start"><span style="width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block"></span><span style="font-size:13px">Whitefield</span></div><div class="flex-center gap-8"><span class="text-xs">High crowd</span><span class="risk-badge low"><span class="dot"></span>Low Risk</span></div></div>
+    </div>
+
+    <!-- ══ GUARDIAN / CHAT SCREEN ══ -->
+    <div id="screen-guardian" class="screen">
+      <div id="view-chat">
+        <div style="font-size:17px;font-weight:700;margin-bottom:14px">Guardian AI</div>
+        <div class="card" style="padding:16px">
+          <div class="chat-window">
+            <div class="chat-messages" id="chat-messages">
+              <div class="chat-msg ai">
+                <div class="chat-bubble">
+                  <div class="chat-sender">GUARDIAN AI</div>
+                  Hi! I'm your Guardian AI — here 24/7 for safety guidance and emergency support. How can I help you today?
+                </div>
+              </div>
+            </div>
+            <div class="chat-input-row">
+              <input type="text" class="chat-input" id="chat-input" placeholder="Ask Guardian AI anything…" onkeydown="if(event.key==='Enter')sendChat()">
+              <button class="chat-send" id="chat-send-btn" onclick="sendChat()">↑</button>
+            </div>
+          </div>
+          <div class="chat-quick">
+            <button class="quick-btn" onclick="setQuick('I feel unsafe')">I feel unsafe</button>
+            <button class="quick-btn" onclick="setQuick('Find safe route')">Find safe route</button>
+            <button class="quick-btn" onclick="setQuick('Notify my guardians')">Notify guardians</button>
+            <button class="quick-btn" onclick="setQuick('What should I do if followed?')">If followed?</button>
+          </div>
+        </div>
+      </div>
+      <!-- Guardian view -->
+      <div id="view-guardian-tracked" style="display:none">
+        <div style="font-size:17px;font-weight:700;margin-bottom:6px">Guardian Dashboard</div>
+        <p class="text-sm mb-14">Monitoring 2 users in real-time</p>
+        <div class="tracked-card" onclick="showTrackedDetail('Priya K.','12.9716, 77.5946','Medium','68%','Walking home via MG Road. Normal movement pattern.')">
+          <div class="flex-between mb-10">
+            <div class="flex-center gap-10" style="justify-content:flex-start">
+              <div class="avatar" style="width:40px;height:40px;background:rgba(245,166,35,0.15);color:var(--amber);font-size:15px">PK</div>
+              <div><div style="font-size:14px;font-weight:600">Priya K.</div><div class="text-xs">Updated just now</div></div>
+            </div>
+            <span class="risk-badge medium"><span class="dot"></span>Medium</span>
+          </div>
+          <div class="tracked-meta">
+            <div class="meta-cell" onclick="event.stopPropagation();showToast('📍 Open in maps: 12.9716° N, 77.5946° E')"><div class="meta-key">Location</div><div class="meta-val">12.9716, 77.5946</div></div>
+            <div class="meta-cell" onclick="event.stopPropagation();showToast('🔋 Battery at 68% — OK')"><div class="meta-key">Battery</div><div class="meta-val">68%</div></div>
+          </div>
+          <div class="tracked-actions" onclick="event.stopPropagation()">
+            <button class="btn btn-secondary btn-sm" style="flex:1" onclick="showToast('📞 Calling Priya K... Ring ring...')">📞 Call</button>
+            <button class="btn btn-secondary btn-sm" style="flex:1" onclick="showToast('💬 Message sent: \"Are you okay?\" with your location')">💬 Message</button>
+            <button class="btn btn-sm" style="flex:2;background:rgba(255,53,103,0.1);border:1px solid var(--border2);color:var(--rose);border-radius:9px;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--font)" onclick="showToast('🚨 Authorities alerted with Priya K\'s live location!')">Alert Authorities</button>
+          </div>
+        </div>
+        <div class="tracked-card critical" onclick="showTrackedDetail('Sneha R.','12.9876, 77.6097','High','23%','⚠️ Route deviation detected. Last seen near Dark Zone. Battery critical.')">
+          <div class="flex-between mb-10">
+            <div class="flex-center gap-10" style="justify-content:flex-start">
+              <div class="avatar" style="width:40px;height:40px;background:rgba(255,53,103,0.15);color:var(--rose);font-size:15px">SR</div>
+              <div><div style="font-size:14px;font-weight:600">Sneha R.</div><div class="text-xs" style="color:var(--rose)">Anomaly detected · 3 min ago</div></div>
+            </div>
+            <span class="risk-badge high"><span class="dot"></span>High Risk</span>
+          </div>
+          <div class="tracked-meta" onclick="event.stopPropagation()">
+            <div class="meta-cell" onclick="showToast('📍 Open in maps: 12.9876° N, 77.6097° E — Near Dark Zone')"><div class="meta-key">Location</div><div class="meta-val">12.9876, 77.6097</div></div>
+            <div class="meta-cell" onclick="showToast('🔋 Battery critical — 23%! Auto-backup location enabled')"><div class="meta-key">Battery</div><div class="meta-val" style="color:var(--rose)">23% ⚠</div></div>
+          </div>
+          <!-- Predicted Path for guardian -->
+          <div class="predicted-path-card" style="margin:10px 0 0;padding:10px 12px" onclick="event.stopPropagation();showToast('🟣 Predicted path: Sneha may continue toward Outer Ring Road based on her routine. Path shared with authorities.')">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:13px">🟣</span>
+              <div>
+                <div style="font-size:12px;font-weight:600;color:var(--purple)">Predicted Path Available</div>
+                <div class="text-xs">Tap to view on map & navigate</div>
+              </div>
+            </div>
+          </div>
+          <div class="tracked-actions" onclick="event.stopPropagation()">
+            <button class="btn btn-secondary btn-sm" style="flex:1" onclick="showToast('📞 Calling Sneha R... Ring ring...')">📞 Call</button>
+            <button class="btn btn-secondary btn-sm" style="flex:1" onclick="showToast('💬 Urgent message sent: \"Sneha, are you safe? Reply now!\"')">💬 Message</button>
+            <button class="btn btn-sm" style="flex:2;background:var(--rose);border:none;color:#fff;border-radius:9px;cursor:pointer;font-size:12px;font-weight:600;font-family:var(--font)" onclick="showToast('🚨 Authorities alerted with Sneha\'s live location + predicted path!')">Alert Authorities</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ HELPERS SCREEN ══ -->
+    <div id="screen-helpers" class="screen">
+      <div style="font-size:17px;font-weight:700;margin-bottom:6px">Nearby Helpers</div>
+      <p class="text-sm mb-14">3 verified helpers online within 2 km</p>
+      <div class="helper-card" onclick="showHelperProfile('Priya S.','Verified Helper','0.2 km','Online')">
+        <div class="helper-top">
+          <div style="position:relative">
+            <div class="avatar" style="width:42px;height:42px;background:rgba(34,208,122,0.15);color:var(--green);font-size:14px;font-weight:700">PS</div>
+            <span class="online-indicator"></span>
+          </div>
+          <div style="flex:1"><div style="font-size:14px;font-weight:600">Priya S.</div><div class="text-xs">Verified Helper · 0.2 km away</div></div>
+          <span class="badge success">Online</span>
+        </div>
+        <div style="display:flex;gap:8px" onclick="event.stopPropagation()">
+          <button class="btn btn-secondary btn-sm" style="flex:1" onclick="showToast('📍 Priya S. location shown on map')">View on Map</button>
+          <button class="btn btn-sm" style="flex:1;background:rgba(34,208,122,0.15);color:var(--green);border:1px solid rgba(34,208,122,0.3);font-family:var(--font);font-size:12px;font-weight:600;border-radius:9px;cursor:pointer" onclick="showToast('📞 Calling Priya S. directly...')">📞 Call</button>
+          <button class="btn btn-primary btn-sm" style="flex:1" onclick="showToast('🆘 Emergency SOS sent to Priya S. — she\'s been notified with your location!')">SOS</button>
+        </div>
+      </div>
+      <div class="helper-card" onclick="showHelperProfile('Anjali M.','Safety Volunteer','0.5 km','Online')">
+        <div class="helper-top">
+          <div style="position:relative">
+            <div class="avatar" style="width:42px;height:42px;background:rgba(34,208,122,0.15);color:var(--green);font-size:14px;font-weight:700">AM</div>
+            <span class="online-indicator"></span>
+          </div>
+          <div style="flex:1"><div style="font-size:14px;font-weight:600">Anjali M.</div><div class="text-xs">Safety Volunteer · 0.5 km away</div></div>
+          <span class="badge success">Online</span>
+        </div>
+        <div style="display:flex;gap:8px" onclick="event.stopPropagation()">
+          <button class="btn btn-secondary btn-sm" style="flex:1" onclick="showToast('📍 Anjali M. location shown on map')">View on Map</button>
+          <button class="btn btn-sm" style="flex:1;background:rgba(34,208,122,0.15);color:var(--green);border:1px solid rgba(34,208,122,0.3);font-family:var(--font);font-size:12px;font-weight:600;border-radius:9px;cursor:pointer" onclick="showToast('📞 Calling Anjali M. directly...')">📞 Call</button>
+          <button class="btn btn-primary btn-sm" style="flex:1" onclick="showToast('🆘 Emergency SOS sent to Anjali M.!')">SOS</button>
+        </div>
+      </div>
+      <div class="helper-card" onclick="showHelperProfile('Officer Kumar','Police Officer','0.8 km','On Duty')">
+        <div class="helper-top">
+          <div style="position:relative">
+            <div class="avatar" style="width:42px;height:42px;background:rgba(79,142,247,0.15);color:var(--blue);font-size:14px;font-weight:700">OK</div>
+            <span class="online-indicator" style="background:var(--blue)"></span>
+          </div>
+          <div style="flex:1"><div style="font-size:14px;font-weight:600">Officer Kumar</div><div class="text-xs">Police · 0.8 km away</div></div>
+          <span class="badge info">On Duty</span>
+        </div>
+        <div style="display:flex;gap:8px" onclick="event.stopPropagation()">
+          <button class="btn btn-secondary btn-sm" style="flex:1" onclick="showToast('📍 Officer Kumar\'s patrol location shown on map')">View on Map</button>
+          <button class="btn btn-sm" style="flex:1;background:rgba(79,142,247,0.15);color:var(--blue);border:1px solid rgba(79,142,247,0.3);font-family:var(--font);font-size:12px;font-weight:600;border-radius:9px;cursor:pointer" onclick="showToast('📞 Calling Officer Kumar...')">📞 Call</button>
+          <button class="btn btn-primary btn-sm" style="flex:1" onclick="showToast('🚔 Emergency request sent to Officer Kumar with your location!')">SOS</button>
+        </div>
+      </div>
+      <div class="helper-card" onclick="showHelperProfile('Dr. Sunita R.','Medical Professional','1.1 km','Away')">
+        <div class="helper-top">
+          <div style="position:relative">
+            <div class="avatar" style="width:42px;height:42px;background:rgba(74,82,112,0.2);color:var(--text2);font-size:14px;font-weight:700">SR</div>
+          </div>
+          <div style="flex:1"><div style="font-size:14px;font-weight:600">Dr. Sunita R.</div><div class="text-xs">Medical · 1.1 km away</div></div>
+          <span class="badge" style="background:rgba(74,82,112,0.2);color:var(--text2)">Away</span>
+        </div>
+        <div style="display:flex;gap:8px" onclick="event.stopPropagation()">
+          <button class="btn btn-secondary btn-sm" style="flex:1" onclick="showToast('📍 Last known location shown on map')">View on Map</button>
+          <button class="btn btn-secondary btn-sm" style="flex:1;opacity:0.5;cursor:not-allowed">📞 Away</button>
+          <button class="btn btn-secondary btn-sm" style="flex:1;opacity:0.5;cursor:not-allowed">SOS (Away)</button>
+        </div>
+      </div>
+      <!-- Broadcast Button -->
+      <button class="btn btn-primary btn-full" style="margin-top:10px;padding:14px" onclick="showEmergencyBroadcast()">📡 Broadcast SOS to All Nearby Helpers</button>
+    </div>
+
+    <!-- ══ ADMIN SCREEN ══ -->
+    <div id="screen-admin" class="screen">
+      <div style="font-size:17px;font-weight:700;margin-bottom:14px">Admin Panel</div>
+      <div class="tab-row" id="admin-tabs">
+        <button class="tab-btn active" data-tab="overview" onclick="switchAdminTab(this)">Overview</button>
+        <button class="tab-btn" data-tab="alerts" onclick="switchAdminTab(this)">Alerts</button>
+        <button class="tab-btn" data-tab="users" onclick="switchAdminTab(this)">Users</button>
+        <button class="tab-btn" data-tab="heatmap" onclick="switchAdminTab(this)">Heatmap</button>
+      </div>
+      <div id="admin-tab-overview">
+        <div class="stat-grid">
+          <div class="stat-card" onclick="showToast('👤 2,841 active users tracked live — 186 helpers online')"><div class="stat-label">Active Users</div><div class="stat-val" style="color:var(--blue)">2,841</div><div class="stat-change">+12% this week</div></div>
+          <div class="stat-card" onclick="showToast('🆘 7 SOS events today — all responded within 4 min avg')"><div class="stat-label">SOS Today</div><div class="stat-val" style="color:var(--rose)">7</div><div class="stat-change">−3 from yesterday</div></div>
+          <div class="stat-card" onclick="showToast('⚠️ 4 high-risk zones active — Hebbal Dark Zone added today')"><div class="stat-label">High Risk Zones</div><div class="stat-val" style="color:var(--amber)">4</div><div class="stat-change">+1 this week</div></div>
+          <div class="stat-card" onclick="showToast('✅ 186 helpers currently online and available')"><div class="stat-label">Helpers Online</div><div class="stat-val" style="color:var(--green)">186</div><div class="stat-change">+24 active now</div></div>
+        </div>
+        <div class="section-title mb-10">System Status</div>
+        <div class="system-row" onclick="showToast('🤖 AI Prediction: 98.7% uptime — Processing 2,841 live feeds')"><span style="font-size:13px">AI Danger Prediction</span><span class="online-tag"><span class="online-tag-dot"></span>ONLINE</span></div>
+        <div class="system-row" onclick="showToast('🛣️ Route Engine: Updated 5 min ago with live traffic & incident data')"><span style="font-size:13px">Safe Route Engine</span><span class="online-tag"><span class="online-tag-dot"></span>ONLINE</span></div>
+        <div class="system-row" onclick="showToast('📢 Broadcast: 0ms latency — Last broadcast 22 min ago')"><span style="font-size:13px">Emergency Broadcast</span><span class="online-tag"><span class="online-tag-dot"></span>ONLINE</span></div>
+        <div class="system-row" onclick="showToast('🎙️ Evidence: Encrypted storage — 847 GB capacity available')"><span style="font-size:13px">Evidence Collection</span><span class="online-tag"><span class="online-tag-dot"></span>ONLINE</span></div>
+        <div class="system-row" onclick="showToast('🔗 Guardian Sync: 198 guardians connected, avg ping 42ms')"><span style="font-size:13px">Guardian Sync</span><span class="online-tag"><span class="online-tag-dot"></span>ONLINE</span></div>
+        <div class="system-row" onclick="showToast('📡 Offline Protection: 2,841 users enrolled — Last triggered 1h ago')"><span style="font-size:13px">Offline Protection</span><span class="online-tag"><span class="online-tag-dot"></span>ONLINE</span></div>
+        <div class="system-row" onclick="showToast('🔮 Anomaly AI: 94.2% accuracy — 12 anomalies detected today')"><span style="font-size:13px">Movement Anomaly AI</span><span class="online-tag"><span class="online-tag-dot"></span>ONLINE</span></div>
+      </div>
+      <div id="admin-tab-alerts" style="display:none">
+        <div style="font-size:12px;color:var(--text2);margin-bottom:10px">Live incident feed</div>
+        <div class="alert-item" style="border-color:var(--border2)" onclick="showAlertDetail('🆘 Active SOS — Priya K.','SOS triggered at Dark Zone, Hebbal. All 3 guardians notified. Officer Kumar dispatched. Live location stream active. ETA: 6 min.','danger')"><div class="alert-icon">🆘</div><div class="alert-body"><div class="alert-msg fw-600">Priya K. — SOS Active</div><div class="text-xs">Dark Zone, Hebbal · 2 min ago</div></div><span class="badge danger">SOS</span></div>
+        <div class="alert-item" onclick="showAlertDetail('🤖 AI Alert — Anjali M.','Movement anomaly: 8-min stop in isolated area + unusual time (2 AM). Risk score elevated to 85. Guardian Vikram notified. No response from user in 4 min.','warning')"><div class="alert-icon">🤖</div><div class="alert-body"><div class="alert-msg">Anjali M. — AI Alert triggered</div><div class="text-xs">Outer Ring Road · 8 min ago</div></div><span class="badge warning">AI</span></div>
+        <div class="alert-item" onclick="showAlertDetail('📵 Device Offline — Sneha R.','Device went offline at 22:47. Battery was at 19%. Last known location: Industrial Area. Predicted path generated and shared with 2 guardians automatically.','danger')"><div class="alert-icon">📵</div><div class="alert-body"><div class="alert-msg">Sneha R. — Device offline</div><div class="text-xs">Industrial Area · 15 min ago</div></div><span class="badge danger">Offline</span></div>
+        <div class="alert-item" style="opacity:0.6" onclick="showAlertDetail('✅ Resolved — Kavya T.','Route deviation resolved. Kavya confirmed she is safe and took an alternate route intentionally. Guardian de-alerted. Normal monitoring resumed.','success')"><div class="alert-icon">🛣️</div><div class="alert-body"><div class="alert-msg">Kavya T. — Route changed</div><div class="text-xs">BTM Layout · 22 min ago</div></div><span class="badge success">Resolved</span></div>
+      </div>
+      <div id="admin-tab-users" style="display:none">
+        <div class="text-sm mb-14">2,841 registered users across 3 roles</div>
+        <div style="margin-bottom:12px" onclick="showToast('👥 2,610 active users tracked across Bengaluru')">
+          <div class="flex-between mb-6"><span style="font-size:13px">Users</span><span style="font-size:12px;color:var(--blue);font-family:var(--mono)">2,610</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:91%;background:var(--blue)"></div></div>
+        </div>
+        <div style="margin-bottom:12px" onclick="showToast('🛡️ 198 guardians actively monitoring users')">
+          <div class="flex-between mb-6"><span style="font-size:13px">Guardians</span><span style="font-size:12px;color:var(--green);font-family:var(--mono)">198</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:7%;background:var(--green)"></div></div>
+        </div>
+        <div style="margin-bottom:12px" onclick="showToast('⚙️ 33 admins managing platform operations')">
+          <div class="flex-between mb-6"><span style="font-size:13px">Admins</span><span style="font-size:12px;color:var(--rose);font-family:var(--mono)">33</span></div>
+          <div class="prog-bar"><div class="prog-fill" style="width:1.2%;background:var(--rose)"></div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="section-title mb-10">Recent Registrations</div>
+        <div class="guardian-item" onclick="showToast('👤 Nandita K. — User profile: Bengaluru, Safety Score 72, 2 guardians added')"><div class="avatar" style="width:32px;height:32px;font-size:12px;background:rgba(255,53,103,0.12);color:var(--rose)">NK</div><div style="flex:1"><div style="font-size:13px;font-weight:500">Nandita K.</div><div class="text-xs">User · Joined 2h ago</div></div><span class="badge success">Active</span></div>
+        <div class="guardian-item" onclick="showToast('🛡️ Sahana V. — Guardian profile: Monitoring 3 users, response rate 98%')"><div class="avatar" style="width:32px;height:32px;font-size:12px;background:rgba(79,142,247,0.12);color:var(--blue)">SV</div><div style="flex:1"><div style="font-size:13px;font-weight:500">Sahana V.</div><div class="text-xs">Guardian · Joined 5h ago</div></div><span class="badge success">Active</span></div>
+        <div class="guardian-item" onclick="showToast('👤 Pooja A. — User profile: Koramangala, 1 guardian, SOS practiced once')"><div class="avatar" style="width:32px;height:32px;font-size:12px;background:rgba(34,208,122,0.12);color:var(--green)">PA</div><div style="flex:1"><div style="font-size:13px;font-weight:500">Pooja A.</div><div class="text-xs">User · Joined 1d ago</div></div><span class="badge success">Active</span></div>
+      </div>
+      <div id="admin-tab-heatmap" style="display:none">
+        <div class="map-container mb-14" style="padding-bottom:60%">
+          <svg class="map-svg" viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice">
+            <defs><pattern id="grid3" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(74,82,112,0.3)" stroke-width="0.5"/></pattern></defs>
+            <rect width="400" height="240" fill="url(#grid3)"/>
+            <ellipse cx="120" cy="80" rx="75" ry="48" fill="#22d07a" fill-opacity="0.25" stroke="#22d07a" stroke-width="1" style="cursor:pointer" onclick="showZoneInfo('MG Road','Safe','High crowd density, well-lit streets, police patrol active')"/>
+            <ellipse cx="100" cy="165" rx="60" ry="38" fill="#22d07a" fill-opacity="0.22" stroke="#22d07a" stroke-width="1" style="cursor:pointer" onclick="showZoneInfo('Koramangala','Safe','Busy commercial area, 24hr activity, full CCTV coverage')"/>
+            <ellipse cx="285" cy="105" rx="55" ry="35" fill="#f5a623" fill-opacity="0.28" stroke="#f5a623" stroke-width="1" style="cursor:pointer" onclick="showZoneInfo('Indiranagar','Medium Risk','Moderate crowd after 10 PM. Caution advised in back streets')"/>
+            <ellipse cx="62" cy="140" rx="42" ry="28" fill="#ff3567" fill-opacity="0.32" stroke="#ff3567" stroke-width="1.2" style="cursor:pointer" onclick="showZoneInfo('Dark Zone','HIGH RISK','4 incidents this week. AVOID — No lighting, isolated area')"/>
+            <ellipse cx="345" cy="180" rx="48" ry="30" fill="#f5a623" fill-opacity="0.22" stroke="#f5a623" stroke-width="1" style="cursor:pointer" onclick="showZoneInfo('BTM Layout','Medium Risk','Mixed area, limited CCTV in back lanes')"/>
+            <ellipse cx="48" cy="55" rx="36" ry="22" fill="#ff3567" fill-opacity="0.32" stroke="#ff3567" stroke-width="1.2" style="cursor:pointer" onclick="showZoneInfo('Industrial Area','HIGH RISK','Deserted after 8 PM, no CCTV, isolated roads')"/>
+            <ellipse cx="215" cy="52" rx="60" ry="34" fill="#22d07a" fill-opacity="0.2" stroke="#22d07a" stroke-width="1" style="cursor:pointer" onclick="showZoneInfo('Whitefield','Safe','Tech park area, good lighting, regular security patrols')"/>
+            <text x="120" y="83" text-anchor="middle" fill="#22d07a" font-size="9" font-family="DM Sans" style="pointer-events:none">MG Road</text>
+            <text x="100" y="168" text-anchor="middle" fill="#22d07a" font-size="8" font-family="DM Sans" style="pointer-events:none">Koramangala</text>
+            <text x="285" y="108" text-anchor="middle" fill="#f5a623" font-size="9" font-family="DM Sans" style="pointer-events:none">Indiranagar</text>
+            <text x="62" y="143" text-anchor="middle" fill="#ff3567" font-size="8" font-family="DM Sans" style="pointer-events:none">Dark Zone</text>
+            <text x="345" y="183" text-anchor="middle" fill="#f5a623" font-size="8" font-family="DM Sans" style="pointer-events:none">BTM Layout</text>
+            <text x="215" y="55" text-anchor="middle" fill="#22d07a" font-size="8" font-family="DM Sans" style="pointer-events:none">Whitefield</text>
+          </svg>
+          <div class="map-legend">
+            <div class="legend-item" onclick="showToast('🟢 Safe zones: 3 active across Bengaluru')"><span class="legend-dot" style="background:var(--green)"></span>Safe</div>
+            <div class="legend-item" onclick="showToast('🟡 Medium: 2 zones — monitoring active')"><span class="legend-dot" style="background:var(--amber)"></span>Medium</div>
+            <div class="legend-item" onclick="showToast('🔴 High risk: 2 zones — authorities alerted')"><span class="legend-dot" style="background:var(--rose)"></span>High</div>
+          </div>
+        </div>
+        <p class="text-sm" style="cursor:pointer" onclick="showToast('🔄 Next update in 3 min — data from live incidents, user reports, crowd sensors')">Heatmap updates every 5 minutes based on live incidents, user reports, and crowd density data.</p>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav" id="bottom-nav">
+    <button class="nav-btn active" data-screen="dashboard" onclick="switchScreen('dashboard')">
+      <span class="nav-icon">⬡</span><span class="nav-label">Home</span>
+    </button>
+    <button class="nav-btn" data-screen="map" onclick="switchScreen('map')">
+      <span class="nav-icon">◎</span><span class="nav-label">Map</span>
+    </button>
+    <button class="nav-btn" data-screen="guardian" onclick="switchScreen('guardian')">
+      <span class="nav-icon">◈</span><span class="nav-label">Guardian</span>
+    </button>
+    <button class="nav-btn" data-screen="helpers" onclick="switchScreen('helpers')">
+      <span class="nav-icon">◉</span><span class="nav-label">Helpers</span>
+      <span class="nav-badge"></span>
+    </button>
+    <button class="nav-btn" id="nav-admin" data-screen="admin" onclick="switchScreen('admin')" style="display:none">
+      <span class="nav-icon">⊞</span><span class="nav-label">Admin</span>
+    </button>
+  </nav>
+
+</div><!-- /main-app -->
+
+<!-- MODAL CONTAINER -->
+<div id="modal-container"></div>
+
+<!-- TOAST -->
+<div id="toast" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border3);border-radius:10px;padding:10px 16px;font-size:13px;color:var(--text);z-index:1000;opacity:0;transition:opacity 0.3s;max-width:320px;text-align:center;pointer-events:none;backdrop-filter:blur(8px)"></div>
+
+<script>
+// ── STATE ──
+let currentUser=null,authMode='login',authRole='user',isChatLoading=false;
+let sosInterval=null,sosCountdown=3,isRecording=false;
+let batteryPct=68,predictedPathVisible=false;
+let chatHistory=[{role:'assistant',content:"Hi! I'm your Guardian AI — here 24/7 for safety guidance and emergency support. How can I help you today?"}];
+let userPos={x:200,y:140};
+let movementInterval=null;
+
+const QUICK_REPLIES={
+  'unsafe':"You're not alone. Keep moving toward a well-lit, crowded area. I'm notifying your guardians now with your live location. Head toward MG Road — it's 0.3 km and has high crowd density.",
+  'route':"The safest route avoids the high-risk zone to your west. Take MG Road — 1.2 km, 14 min walk, high crowd density and good lighting. I've updated the map with this route.",
+  'guardian':"Your guardians Meena and Riya are currently online and tracking your location. Want me to send them a check-in message or trigger a full alert?",
+  'followed':"Stay calm. Move toward the nearest busy, well-lit place. Don't go home directly. Enter a shop or restaurant. Call someone you trust. If the person persists, trigger SOS immediately. I'm monitoring your location.",
+  'unsafe':"You're not alone. Stay calm and move toward MG Road (0.3 km, well-lit). I've already notified Meena and Riya. If you feel immediate danger, press SOS.",
+  'help':"I can help you: find safe routes, notify guardians, trigger SOS, locate nearby helpers, or talk through a situation. What do you need right now?",
+  'scared':"I understand. Stay calm — your safety is my priority. Move toward MG Road (0.3 km, well-lit). I've already notified Meena and Riya. If you feel immediate danger, press SOS."
+};
+
+// ── AUTH ──
+function switchMode(m){
+  authMode=m;
+  document.getElementById('tab-login').classList.toggle('active',m==='login');
+  document.getElementById('tab-signup').classList.toggle('active',m==='signup');
+  document.getElementById('name-group').style.display=m==='signup'?'block':'none';
+}
+document.querySelectorAll('#role-tabs .role-tab').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    authRole=this.dataset.role;
+    document.querySelectorAll('#role-tabs .role-tab').forEach(b=>b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+function sendOTP(){
+  const email=document.getElementById('auth-email').value.trim();
+  if(!email)return;
+  const btn=document.getElementById('btn-send-otp');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
+  setTimeout(()=>{
+    document.getElementById('auth-step1').style.display='none';
+    document.getElementById('auth-step2').style.display='block';
+    btn.disabled=false;btn.innerHTML='Send OTP →';
+  },1000);
+}
+function verifyOTP(){
+  const otp=document.getElementById('auth-otp').value.trim();
+  if(otp!=='1234'){
+    document.getElementById('auth-otp').style.borderColor='var(--rose)';
+    setTimeout(()=>document.getElementById('auth-otp').style.borderColor='',1500);
+    return;
+  }
+  const btn=document.getElementById('btn-verify');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
+  setTimeout(()=>{
+    const name=document.getElementById('auth-name')?.value.trim()||'Priya';
+    currentUser={name:name||'Priya',email:document.getElementById('auth-email').value,role:authRole};
+    initApp();
+  },900);
+}
+function backToStep1(){
+  document.getElementById('auth-step1').style.display='block';
+  document.getElementById('auth-step2').style.display='none';
+}
+function initApp(){
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('main-app').style.display='flex';
+  document.getElementById('main-app').style.flexDirection='column';
+  const initials=currentUser.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('topbar-avatar').textContent=initials;
+  document.getElementById('topbar-name').textContent=currentUser.name.split(' ')[0];
+  if(currentUser.role==='admin') document.getElementById('nav-admin').style.display='flex';
+  if(currentUser.role==='guardian'){
+    document.getElementById('view-chat').style.display='none';
+    document.getElementById('view-guardian-tracked').style.display='block';
+  }
+  const colors={user:'rgba(255,53,103,0.2)',guardian:'rgba(34,208,122,0.2)',admin:'rgba(164,99,242,0.2)'};
+  const textColors={user:'var(--rose)',guardian:'var(--green)',admin:'var(--purple)'};
+  const av=document.getElementById('topbar-avatar');
+  av.style.background=colors[currentUser.role];
+  av.style.color=textColors[currentUser.role];
+  startSimulations();
+  startClock();
+  // Trigger anomaly demo after 8 seconds
+  setTimeout(()=>showAnomalyAlert('Route deviation detected','Unusual movement near Dark Zone — tap to review'),8000);
+}
+function logout(){
+  currentUser=null;
+  clearInterval(movementInterval);
+  document.getElementById('main-app').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+  document.getElementById('auth-step1').style.display='block';
+  document.getElementById('auth-step2').style.display='none';
+  document.getElementById('auth-email').value='';
+  document.getElementById('auth-otp').value='';
+  document.getElementById('btn-verify').disabled=false;
+  document.getElementById('btn-verify').innerHTML='Verify & Enter →';
+}
+
+// ── NAVIGATION ──
+function switchScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.querySelector(`.nav-btn[data-screen="${name}"]`)?.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── SOS ──
+function startSOS(){
+  sosCountdown=3;
+  document.getElementById('sos-btn').textContent='3';
+  sosInterval=setInterval(()=>{
+    sosCountdown--;
+    if(sosCountdown<=0){clearInterval(sosInterval);activateSOS();}
+    else document.getElementById('sos-btn').textContent=String(sosCountdown);
+  },1000);
+}
+function cancelSOS(){clearInterval(sosInterval);document.getElementById('sos-btn').textContent='SOS';}
+function activateSOS(){
+  document.getElementById('sos-idle').style.display='none';
+  document.getElementById('sos-active').style.display='block';
+  showToast('🚨 SOS activated — Guardians notified with live location!');
+}
+function cancelSOSActive(){
+  document.getElementById('sos-idle').style.display='block';
+  document.getElementById('sos-active').style.display='none';
+  document.getElementById('sos-btn').textContent='SOS';
+  showToast('✅ SOS cancelled — Guardians notified');
+}
+
+// ── RECORDING (Real MediaRecorder) ──
+let mediaRecorder=null, audioChunks=[], recordingTimer=null, recordingSeconds=0;
+let vaultItems=[];
+
+function toggleRecording(){
+  if(!isRecording){startAudioRecording();}else{stopAudioRecording();}
+}
+async function startAudioRecording(){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    audioChunks=[];
+    mediaRecorder=new MediaRecorder(stream);
+    mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data);};
+    mediaRecorder.onstop=()=>{
+      const blob=new Blob(audioChunks,{type:'audio/webm'});
+      const url=URL.createObjectURL(blob);
+      const duration=recordingSeconds;
+      vaultItems.unshift({type:'audio',url,name:'Audio_'+new Date().toLocaleTimeString(),duration:duration+'s',time:new Date().toLocaleTimeString(),blob});
+      stream.getTracks().forEach(t=>t.stop());
+      showToast('💾 Audio saved to your secure evidence vault ('+duration+'s)');
+      updateEvidenceBadge();
+    };
+    mediaRecorder.start();
+    isRecording=true;
+    recordingSeconds=0;
+    recordingTimer=setInterval(()=>{recordingSeconds++;updateRecordingUI();},1000);
+    const btn=document.getElementById('ev-rec-btn'),badge=document.getElementById('ev-badge');
+    if(btn){btn.innerHTML='<span style="display:flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:var(--rose);animation:blink 0.8s infinite"></span>Stop</span>';btn.style.borderColor='var(--rose)';btn.style.color='var(--rose)';}
+    if(badge){badge.textContent='Recording';badge.style.background='rgba(255,53,103,0.12)';badge.style.color='var(--rose)';}
+    showToast('⏺ Recording started — audio captured to vault');
+  }catch(e){showToast('🎙️ Microphone access denied — enable in browser settings');}
+}
+function stopAudioRecording(){
+  if(mediaRecorder&&mediaRecorder.state!=='inactive'){mediaRecorder.stop();}
+  clearInterval(recordingTimer);
+  isRecording=false;
+  const btn=document.getElementById('ev-rec-btn'),badge=document.getElementById('ev-badge');
+  if(btn){btn.textContent='⏺ Record';btn.style.borderColor='';btn.style.color='';}
+  if(badge){badge.textContent='Standby';badge.style.background='rgba(79,142,247,0.12)';badge.style.color='var(--blue)';}
+}
+function updateRecordingUI(){
+  const mins=Math.floor(recordingSeconds/60).toString().padStart(2,'0');
+  const secs=(recordingSeconds%60).toString().padStart(2,'0');
+  const btn=document.getElementById('ev-rec-btn');
+  if(btn)btn.innerHTML=`<span style="display:flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:var(--rose);animation:blink 0.8s infinite"></span>Stop ${mins}:${secs}</span>`;
+  // update open modal if any
+  const recTime=document.getElementById('modal-rec-time');
+  if(recTime)recTime.textContent=mins+':'+secs;
+}
+function updateEvidenceBadge(){
+  const cnt=document.getElementById('vault-count');
+  if(cnt)cnt.textContent=vaultItems.length;
+}
+
+// ── TIME CHANGER ──
+let customTime=null, clockInterval=null;
+function startClock(){
+  updateClockDisplay();
+  clockInterval=setInterval(updateClockDisplay,1000);
+}
+function updateClockDisplay(){
+  const now=customTime?new Date(customTime.getTime()+(Date.now()-customTime._setAt)):new Date();
+  if(customTime)customTime._elapsed=(Date.now()-customTime._setAt);
+  const h=now.getHours().toString().padStart(2,'0');
+  const m=now.getMinutes().toString().padStart(2,'0');
+  const el=document.getElementById('clock-display');
+  if(el)el.textContent=h+':'+m;
+  // Update topbar clock color based on time-of-day risk
+  const topClock=document.getElementById('topbar-clock');
+  if(topClock){
+    const hr=now.getHours();
+    if(hr>=22||hr<5){topClock.style.background='rgba(255,53,103,0.12)';topClock.style.borderColor='rgba(255,53,103,0.3)';topClock.style.color='var(--rose)';}
+    else if(hr>=18||hr<7){topClock.style.background='rgba(245,166,35,0.12)';topClock.style.borderColor='rgba(245,166,35,0.25)';topClock.style.color='var(--amber)';}
+    else{topClock.style.background='rgba(79,142,247,0.1)';topClock.style.borderColor='rgba(79,142,247,0.2)';topClock.style.color='var(--blue)';}
+  }
+}
+function setCustomTime(h,m){
+  const d=new Date();d.setHours(h,m,0,0);d._setAt=Date.now();customTime=d;
+  updateClockDisplay();
+  showToast('🕐 Time set to '+h.toString().padStart(2,'0')+':'+m.toString().padStart(2,'0')+' — Risk score updated');
+  // refresh risk factor display
+  const riskTime=document.getElementById('risk-time-factor');
+  if(riskTime){
+    const isNight=h>=22||h<5,isEvening=h>=18||h<7;
+    riskTime.textContent=isNight?'Night (High Risk)':isEvening?'Evening (Medium)':'Daytime (Safe)';
+    riskTime.style.color=isNight?'var(--rose)':isEvening?'var(--amber)':'var(--green)';
+  }
+}
+function resetToRealTime(){customTime=null;updateClockDisplay();showToast('🕐 Reverted to real time');}
+
+function showTimeChanger(){
+  const now=customTime?new Date(customTime.getTime()+(Date.now()-customTime._setAt)):new Date();
+  const curH=now.getHours(),curM=now.getMinutes();
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">🕐 Time Simulator</div>
+    <p class="text-sm" style="margin-bottom:14px;color:var(--text2)">Simulate different times of day to see how risk scores change</p>
+
+    <div class="time-picker-wrap">
+      <div class="time-display" id="tc-preview">${curH.toString().padStart(2,'0')}:${curM.toString().padStart(2,'0')}</div>
+      <div class="time-input-row">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <button onclick="adjustTime(1,0)" style="background:var(--bg4);border:1px solid var(--border);border-radius:6px;color:var(--text2);width:36px;height:28px;cursor:pointer;font-size:16px">▲</button>
+          <input type="number" class="time-num-input" id="tc-hour" value="${curH}" min="0" max="23" oninput="updateTimePreview()">
+          <button onclick="adjustTime(-1,0)" style="background:var(--bg4);border:1px solid var(--border);border-radius:6px;color:var(--text2);width:36px;height:28px;cursor:pointer;font-size:16px">▼</button>
+          <span style="font-size:10px;color:var(--text3)">HH</span>
+        </div>
+        <div class="time-sep">:</div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <button onclick="adjustTime(0,5)" style="background:var(--bg4);border:1px solid var(--border);border-radius:6px;color:var(--text2);width:36px;height:28px;cursor:pointer;font-size:16px">▲</button>
+          <input type="number" class="time-num-input" id="tc-min" value="${curM}" min="0" max="59" oninput="updateTimePreview()">
+          <button onclick="adjustTime(0,-5)" style="background:var(--bg4);border:1px solid var(--border);border-radius:6px;color:var(--text2);width:36px;height:28px;cursor:pointer;font-size:16px">▼</button>
+          <span style="font-size:10px;color:var(--text3)">MM</span>
+        </div>
+      </div>
+      <div class="time-period-row">
+        <button class="period-btn${curH<12?'  active':''}" onclick="setAmPm('am')">AM</button>
+        <button class="period-btn${curH>=12?' active':''}" onclick="setAmPm('pm')">PM</button>
+      </div>
+    </div>
+
+    <div class="time-preset-row">
+      ${[['🌅','6:00 AM',6,0],['☀️','12:00 PM',12,0],['🌆','6:00 PM',18,0],['🌃','9:00 PM',21,0],['🌙','11:30 PM',23,30],['🌑','2:00 AM',2,0]].map(([icon,label,h,m])=>`
+      <button class="time-preset" onclick="setPresetTime(${h},${m})">${icon}<br>${label}</button>`).join('')}
+    </div>
+
+    <div id="tc-risk-preview" style="margin-top:12px;padding:12px;background:var(--bg3);border-radius:10px;border:1px solid var(--border)">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px">Risk at this time</div>
+      <div id="tc-risk-label" style="font-size:13px;font-weight:600"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:14px">
+      <button class="btn btn-secondary" style="flex:1" onclick="resetToRealTime();closeModal()">↺ Real Time</button>
+      <button class="btn btn-primary" style="flex:2" onclick="applyCustomTime()">Apply Time →</button>
+    </div>
+    ${customTime?`<p style="text-align:center;font-size:11px;color:var(--rose);margin-top:8px">⚠️ Simulated time active</p>`:''}
+  `);
+  updateTimePreview();
+}
+function updateTimePreview(){
+  const h=parseInt(document.getElementById('tc-hour')?.value)||0;
+  const m=parseInt(document.getElementById('tc-min')?.value)||0;
+  const preview=document.getElementById('tc-preview');
+  if(preview)preview.textContent=h.toString().padStart(2,'0')+':'+m.toString().padStart(2,'0');
+  const riskLabel=document.getElementById('tc-risk-label');
+  if(riskLabel){
+    if(h>=22||h<5){riskLabel.innerHTML='🔴 <span style="color:var(--rose)">High Risk</span> — Late night hours, reduced activity, darker streets';}
+    else if(h>=18||h<7){riskLabel.innerHTML='🟡 <span style="color:var(--amber)">Medium Risk</span> — Evening hours, moderate foot traffic';}
+    else{riskLabel.innerHTML='🟢 <span style="color:var(--green)">Low Risk</span> — Daytime hours, busy streets, good visibility';}
+  }
+}
+function adjustTime(dh,dm){
+  const hEl=document.getElementById('tc-hour'),mEl=document.getElementById('tc-min');
+  if(!hEl||!mEl)return;
+  let h=parseInt(hEl.value)+dh,m=parseInt(mEl.value)+dm;
+  if(m<0){m=55;h--;}if(m>59){m=0;h++;}
+  if(h<0)h=23;if(h>23)h=0;
+  hEl.value=h;mEl.value=m;updateTimePreview();
+}
+function setAmPm(period){
+  const hEl=document.getElementById('tc-hour');if(!hEl)return;
+  let h=parseInt(hEl.value);
+  if(period==='am'&&h>=12)h-=12;
+  if(period==='pm'&&h<12)h+=12;
+  hEl.value=h;updateTimePreview();
+  document.querySelectorAll('.period-btn').forEach((b,i)=>{b.classList.toggle('active',i===(period==='am'?0:1));});
+}
+function setPresetTime(h,m){
+  const hEl=document.getElementById('tc-hour'),mEl=document.getElementById('tc-min');
+  if(hEl)hEl.value=h;if(mEl)mEl.value=m;updateTimePreview();
+}
+function applyCustomTime(){
+  const h=Math.max(0,Math.min(23,parseInt(document.getElementById('tc-hour')?.value)||0));
+  const m=Math.max(0,Math.min(59,parseInt(document.getElementById('tc-min')?.value)||0));
+  setCustomTime(h,m);closeModal();
+}
+
+// ── ADMIN TABS ──
+function switchAdminTab(btn){
+  const tab=btn.dataset.tab;
+  document.querySelectorAll('#admin-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['overview','alerts','users','heatmap'].forEach(t=>{
+    const el=document.getElementById('admin-tab-'+t);
+    if(el)el.style.display=t===tab?'block':'none';
+  });
+}
+
+// ── CHAT ──
+function setQuick(text){document.getElementById('chat-input').value=text;document.getElementById('chat-input').focus();}
+function appendMessage(role,content){
+  const msgs=document.getElementById('chat-messages');
+  const div=document.createElement('div');
+  div.className='chat-msg '+(role==='user'?'user':'ai');
+  div.style.animation='fade-up 0.3s ease';
+  div.innerHTML=`<div class="chat-bubble">${role!=='user'?'<div class="chat-sender">GUARDIAN AI</div>':''}<span>${content}</span></div>`;
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function showTyping(){
+  const msgs=document.getElementById('chat-messages');
+  const div=document.createElement('div');div.id='typing-indicator';div.className='chat-msg ai';
+  div.innerHTML='<div class="chat-typing"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function hideTyping(){document.getElementById('typing-indicator')?.remove();}
+function getLocalReply(msg){
+  const lower=msg.toLowerCase();
+  for(const[k,v]of Object.entries(QUICK_REPLIES)){if(lower.includes(k))return v;}
+  return null;
+}
+async function sendChat(){
+  const input=document.getElementById('chat-input');
+  const text=input.value.trim();
+  if(!text||isChatLoading)return;
+  input.value='';isChatLoading=true;
+  document.getElementById('chat-send-btn').disabled=true;
+  appendMessage('user',text);chatHistory.push({role:'user',content:text});
+  showTyping();await new Promise(r=>setTimeout(r,700));
+  const local=getLocalReply(text);
+  if(local){hideTyping();appendMessage('ai',local);chatHistory.push({role:'assistant',content:local});isChatLoading=false;document.getElementById('chat-send-btn').disabled=false;return;}
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:"You are Guardian AI inside the SheShield women's safety app. Be warm, calm, direct, and reassuring. Give brief (2-3 sentences) actionable safety advice. Current location: Bengaluru, India. Risk level: Medium.",messages:chatHistory.filter(m=>m.role!=='system')})});
+    const d=await res.json();
+    const reply=d.content?.[0]?.text||"I'm here with you. Stay in a well-lit area and keep moving. If you feel unsafe, press the SOS button immediately.";
+    hideTyping();appendMessage('ai',reply);chatHistory.push({role:'assistant',content:reply});
+  }catch{
+    hideTyping();const fb="I'm here with you. Stay in a well-lit, crowded area. If you feel immediate danger, press the SOS button.";
+    appendMessage('ai',fb);chatHistory.push({role:'assistant',content:fb});
+  }
+  isChatLoading=false;document.getElementById('chat-send-btn').disabled=false;
+}
+
+// ── TOAST ──
+let toastTimeout=null;
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.style.opacity='1';
+  clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>t.style.opacity='0',3500);
+}
+
+// ── MODALS ──
+function openModal(html){
+  closeModal();
+  const overlay=document.createElement('div');overlay.className='modal-overlay';overlay.id='active-modal';
+  overlay.innerHTML=`<div class="modal-sheet" style="position:relative">${html}</div>`;
+  overlay.addEventListener('click',e=>{if(e.target===overlay)closeModal();});
+  document.getElementById('modal-container').appendChild(overlay);
+}
+function closeModal(){
+  const m=document.getElementById('active-modal');if(m)m.remove();
+}
+
+function showRiskModal(){
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Risk Score Analysis</div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:14px">AI-powered real-time safety assessment</div>
+    ${[['🕐','Time of Day (Night)','35','Nighttime hours carry higher risk in urban areas'],['👥','Crowd Density (Medium)','18','Medium crowd — some safety but not optimal'],['📍','Incident History','9','3 reported incidents in Indiranagar this week'],['🚶','Unusual Stop','12','Unexpected 3-min stop detected earlier — flag raised'],['💡','Street Lighting','8','Partial lighting in current zone — caution advised']].map(([icon,factor,pts,desc])=>`
+    <div class="card" style="margin-bottom:8px;cursor:pointer" onclick="showToast('${desc}')">
+      <div class="flex-between mb-6"><div style="display:flex;gap:8px;align-items:center"><span>${icon}</span><span style="font-size:13px;font-weight:500">${factor}</span></div><span style="font-family:var(--mono);font-size:13px;color:var(--rose)">+${pts}</span></div>
+      <div style="font-size:11px;color:var(--text3)">${desc}</div>
+    </div>`).join('')}
+    <div class="card" style="margin-top:12px;background:rgba(34,208,122,0.06);border-color:rgba(34,208,122,0.2)">
+      <div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:4px">💡 Reduce your risk score</div>
+      <div class="text-sm">Move to MG Road (+safe zone) · Contact guardian · Avoid dark alleys</div>
+    </div>
+    <button class="btn btn-primary btn-full" style="margin-top:12px" onclick="closeModal();switchScreen('map')">View Safe Routes →</button>
+  `);
+}
+
+function showAnomalyModal(){
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" style="color:var(--rose)">⚠️ Movement Anomaly Details</div>
+    <div class="anomaly-banner" style="margin-bottom:14px;animation:none">
+      <div style="font-size:13px;font-weight:600;color:var(--rose)">3 anomaly factors detected — alert triggered</div>
+    </div>
+    ${[['🔴','Route Deviation','Deviated 400m from usual home route','High','21:52'],['🟡','Unexpected Stop','3-minute stop in medium-risk area','Medium','22:08'],['🔴','Night + Isolation','Movement in isolated area at night','High','21:52']].map(([dot,type,desc,sev,time])=>`
+    <div class="movement-item ${sev==='High'?'anomaly':'warning'}" style="margin-bottom:8px" onclick="showToast('📊 ${type}: ${desc}')">
+      <span>${dot}</span>
+      <div style="flex:1"><div style="font-size:12px;font-weight:600">${type}</div><div class="text-xs">${desc}</div></div>
+      <div style="text-align:right"><div class="badge ${sev==='High'?'danger':'warning'}" style="font-size:10px">${sev}</div><div class="text-xs" style="margin-top:3px">${time}</div></div>
+    </div>`).join('')}
+    <div class="divider"></div>
+    <p class="text-sm mb-10">AI only triggers alerts when <strong style="color:var(--text)">2+ risk factors combine</strong> to reduce false alarms. Your guardians were notified.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button class="btn btn-secondary" onclick="closeModal();showToast('✅ Guardians confirmed you are being monitored')">I'm Safe</button>
+      <button class="btn btn-primary" onclick="closeModal();activateSOS()">Trigger SOS</button>
+    </div>
+  `);
+}
+
+function showMovementDetail(type,time,title,desc){
+  const color=type==='anomaly'?'var(--rose)':type==='warning'?'var(--amber)':'var(--green)';
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Movement Event</div>
+    <div class="movement-item ${type}" style="margin-bottom:14px;cursor:default"><span style="font-size:16px">${type==='anomaly'?'🔴':type==='warning'?'🟡':'🟢'}</span><div><div style="font-weight:600;color:${color}">${title}</div><div class="text-xs">${time}</div></div></div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:14px">${desc}</p>
+    ${type!=='normal'?`<button class="btn btn-primary btn-full" onclick="closeModal();showToast('👁️ AI is monitoring your movement for further anomalies')">Mark as Safe</button>`:'<button class="btn btn-secondary btn-full" onclick="closeModal()">Close</button>'}
+  `);
+}
+
+function showAlertDetail(title,desc,type){
+  const colors={danger:'var(--rose)',warning:'var(--amber)',success:'var(--green)',info:'var(--blue)'};
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" style="color:${colors[type]||'var(--text)'}">${title}</div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:16px">${desc}</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button class="btn btn-secondary" onclick="closeModal()">Dismiss</button>
+      <button class="btn btn-primary" onclick="closeModal();switchScreen('guardian');showToast('💬 Connecting to Guardian AI...')">Chat Guardian AI</button>
+    </div>
+  `);
+}
+
+function showZoneInfo(name,riskLevel,details){
+  const isHigh=riskLevel.includes('HIGH');const isMed=riskLevel.includes('Medium');
+  const color=isHigh?'var(--rose)':isMed?'var(--amber)':'var(--green)';
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="flex-between mb-14">
+      <div class="modal-title" style="margin:0">${name}</div>
+      <span class="risk-badge ${isHigh?'high':isMed?'medium':'low'}"><span class="dot"></span>${riskLevel}</span>
+    </div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.65;margin-bottom:14px">${details}</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+      ${isHigh?`<button class="btn btn-primary" onclick="closeModal();showToast('🔵 Safe route avoiding ${name} has been set')">Avoid & Re-route</button>`:`<button class="btn btn-secondary" onclick="closeModal();showToast('📍 ${name} set as waypoint on your route')">Set as Waypoint</button>`}
+    </div>
+  `);
+}
+
+function showCallModal(){
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Call Guardian</div>
+    <p class="text-sm mb-14">Live location shared when call connects</p>
+    ${[['Meena (Mom)','+91 98765 43210','Active','rgba(34,208,122,0.15)','var(--green)'],['Riya (Sister)','+91 87654 32109','Active','rgba(34,208,122,0.15)','var(--green)'],['Arjun (Friend)','+91 76543 21098','Away','rgba(74,82,112,0.3)','var(--text2)']].map(([name,num,status,bg,col])=>`
+    <div class="guardian-item" onclick="closeModal();showToast('📞 Calling ${name}... Live location sharing started')">
+      <div class="avatar" style="width:38px;height:38px;background:${bg};color:${col};font-size:13px">${name[0]}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:500">${name}</div><div class="text-xs">${num}</div></div>
+      <span style="font-size:12px;color:${col};font-weight:600">${status}</span>
+    </div>`).join('')}
+    <button class="btn btn-secondary btn-full" style="margin-top:4px" onclick="closeModal();showToast('📞 Calling emergency services: 100')">🚨 Call Emergency (100)</button>
+  `);
+}
+
+function showMessageModal(){
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Send Location</div>
+    <p class="text-sm mb-14">Share your live GPS location with guardians</p>
+    <div style="background:var(--bg3);border-radius:10px;padding:12px;margin-bottom:12px;border:1px solid var(--border)">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:4px">YOUR CURRENT LOCATION</div>
+      <div style="font-family:var(--mono);font-size:13px">12.9716° N, 77.5946° E</div>
+      <div class="text-xs mt-6">📍 Indiranagar, Bengaluru</div>
+    </div>
+    ${[['Meena (Mom)','Active'],['Riya (Sister)','Active'],['Arjun (Friend)','Away'],['All Guardians','3 contacts']].map(([name,status])=>`
+    <button class="btn btn-secondary btn-full" style="margin-bottom:8px;text-align:left;padding:10px 14px;display:flex;justify-content:space-between;align-items:center" onclick="closeModal();showToast('📍 Live location sent to ${name} — they can track you in real time')">
+      <span>${name}</span><span class="badge ${status==='Active'?'success':'warning'}" style="font-size:10px">${status}</span>
+    </button>`).join('')}
+  `);
+}
+
+function showEmergencyBroadcast(){
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" style="color:var(--rose)">🆘 Emergency Broadcast</div>
+    <p class="text-sm mb-14">Send SOS to all nearby helpers + your guardians simultaneously</p>
+    <div class="card" style="margin-bottom:12px;background:rgba(255,53,103,0.06);border-color:rgba(255,53,103,0.2)">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:8px">WILL NOTIFY:</div>
+      <div style="font-size:13px;color:var(--text)">✅ Meena (Mom) · Riya (Sister) · Arjun</div>
+      <div style="font-size:13px;color:var(--text);margin-top:4px">✅ Priya S. · Anjali M. · Officer Kumar</div>
+      <div style="font-size:13px;color:var(--text);margin-top:4px">✅ Emergency Services</div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:6px">BROADCAST MESSAGE</div>
+      <textarea style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;resize:none;height:70px">I need help. My live location is attached. Please come to my location immediately.</textarea>
+    </div>
+    <button class="btn btn-primary btn-full" style="padding:13px" onclick="closeModal();showToast('📡 SOS Broadcast sent! 6 people notified with your live location')">Send Emergency Broadcast</button>
+  `);
+}
+
+function showGuardianContact(name,relation,phone,status,details){
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px">
+      <div class="avatar" style="width:54px;height:54px;background:rgba(34,208,122,0.15);color:var(--green);font-size:20px">${name[0]}</div>
+      <div><div style="font-size:16px;font-weight:700">${name}</div><div class="text-xs">${relation} · <span style="color:var(--${status==='Active'?'green':'text3'})">${status}</span></div></div>
+    </div>
+    <div class="card" style="margin-bottom:14px"><div class="text-xs mb-6">STATUS</div><div style="font-size:13px">${details}</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <button class="btn btn-secondary" onclick="closeModal();showToast('📞 Calling ${name}...')">📞 Call</button>
+      <button class="btn btn-secondary" onclick="closeModal();showToast('💬 Sending live location to ${name}')">📍 Send Location</button>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="closeModal();showToast('🆘 SOS + live location sent to ${name}!')">🆘 Emergency Alert</button>
+    <button class="btn btn-secondary btn-full" style="margin-top:8px" onclick="closeModal();showToast('✅ Check-in sent: \"I\'m okay — ${name} acknowledged\"')">✅ Send Check-In</button>
+  `);
+}
+
+function showHelperProfile(name,role,distance,status){
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px">
+      <div style="position:relative"><div class="avatar" style="width:54px;height:54px;background:rgba(34,208,122,0.15);color:var(--green);font-size:18px;font-weight:700">${name.split(' ').map(n=>n[0]).join('').slice(0,2)}</div><span class="online-indicator"></span></div>
+      <div><div style="font-size:16px;font-weight:700">${name}</div><div class="text-xs">${role} · ${distance}</div></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px">
+      ${[['Response','<2 min'],['Rating','4.9 ⭐'],['Helped','47']].map(([k,v])=>`<div class="factor-cell"><div class="factor-label">${k}</div><div style="font-size:12px;font-weight:600">${v}</div></div>`).join('')}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <button class="btn btn-secondary" onclick="closeModal();showToast('📞 Calling ${name}...')">📞 Call</button>
+      <button class="btn btn-secondary" onclick="closeModal();showToast('📍 ${name} shown on map')">View on Map</button>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="closeModal();showToast('🆘 Emergency SOS sent to ${name} — they\'ve been notified with your live location!')">🆘 Send SOS</button>
+  `);
+}
+
+function showTrackedDetail(name,coords,risk,battery,notes){
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="flex-between mb-14">
+      <div class="modal-title" style="margin:0">${name}</div>
+      <span class="risk-badge ${risk==='High'?'high':risk==='Medium'?'medium':'low'}"><span class="dot"></span>${risk}</span>
+    </div>
+    <div class="card" style="margin-bottom:12px"><div class="text-xs mb-6">LIVE GPS</div><div style="font-family:var(--mono);font-size:13px">${coords}</div></div>
+    <div class="card" style="margin-bottom:12px"><div class="text-xs mb-6">BATTERY</div><div style="font-family:var(--mono);font-size:13px;color:${parseInt(battery)<25?'var(--rose)':'var(--green)'}">${battery}</div></div>
+    <div class="card" style="margin-bottom:14px"><div class="text-xs mb-6">AI ANALYSIS</div><div style="font-size:13px;color:var(--text2)">${notes}</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <button class="btn btn-secondary" onclick="closeModal();showToast('📞 Calling ${name}...')">📞 Call</button>
+      <button class="btn btn-secondary" onclick="closeModal();showToast('💬 Urgent message sent to ${name}')">💬 Message</button>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="closeModal();showToast('🚨 Authorities alerted with ${name}\'s live location!')">🚨 Alert Authorities</button>
+  `);
+}
+
+function showProfileModal(){
+  if(!currentUser)return;
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div style="text-align:center;margin-bottom:16px">
+      <div class="avatar" style="width:60px;height:60px;font-size:22px;font-weight:700;background:rgba(255,53,103,0.2);color:var(--rose);margin:0 auto 10px">${currentUser.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase()}</div>
+      <div style="font-size:16px;font-weight:700">${currentUser.name}</div>
+      <div class="text-xs">${currentUser.email}</div>
+      <span class="badge ${currentUser.role==='admin'?'purple':currentUser.role==='guardian'?'success':'danger'}" style="margin-top:6px">${currentUser.role}</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <button class="btn btn-secondary btn-sm" onclick="closeModal();showToast('📊 Safety stats: 47 journeys, 0 incidents, 2 SOS tests')">Safety Stats</button>
+      <button class="btn btn-secondary btn-sm" onclick="closeModal();showToast('🔔 Notification settings updated')">Notifications</button>
+    </div>
+    <button class="btn btn-secondary btn-full" onclick="closeModal();showToast('⚙️ Settings panel — feature coming soon')">Settings</button>
+    <button class="btn btn-secondary btn-full" style="margin-top:8px;color:var(--rose);border-color:rgba(255,53,103,0.3)" onclick="closeModal();logout()">Logout</button>
+  `);
+}
+
+function showBatteryModal(){
+  const critical=batteryPct<15;
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Battery & Offline Protection</div>
+    <div class="card" style="margin-bottom:12px;${critical?'border-color:var(--border2);background:rgba(255,53,103,0.05)':''}">
+      <div class="flex-between mb-10">
+        <div style="font-size:14px;font-weight:600">Current Battery</div>
+        <div style="font-family:var(--mono);font-size:20px;font-weight:700;color:${critical?'var(--rose)':batteryPct<30?'var(--amber)':'var(--green)'}">${batteryPct}%</div>
+      </div>
+      <div class="prog-bar" style="height:8px"><div class="prog-fill" style="width:${batteryPct}%;background:${critical?'var(--rose)':batteryPct<30?'var(--amber)':'var(--green)'}"></div></div>
+      ${critical?'<div class="text-xs" style="color:var(--rose);margin-top:8px">⚠️ Critical! Auto-backup triggered — last location sent to guardians</div>':''}
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:600;color:var(--blue);margin-bottom:6px">📡 Offline Protection Status</div>
+      <div class="text-sm">Last known location saved: <strong style="color:var(--text)">Indiranagar, BLR</strong></div>
+      <div class="text-sm mt-6">Predicted path generated: <strong style="color:var(--purple)">Active</strong></div>
+      <div class="text-sm mt-6">Guardians subscribed: <strong style="color:var(--text)">Meena, Riya, Arjun</strong></div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;margin-bottom:6px">Auto-triggers when:</div>
+      <div class="text-sm">🔋 Battery drops below 10%</div>
+      <div class="text-sm mt-6">📵 Device goes offline (>3 min)</div>
+      <div class="text-sm mt-6">⚡ Sudden power-off detected</div>
+    </div>
+  `);
+}
+
+function showOfflineModal(){
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Offline & Low Battery Protection</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      ${[['🔋','Battery < 10%','Last GPS location sent to all guardians. Predicted path generated from movement history.'],['📵','Device Offline','After 3 min offline: auto-broadcast with last location + predicted route to next checkpoint.'],['⚡','Sudden Power Off','Detected via sensor — immediate broadcast to guardians + authorities with last known position.'],['🟣','Predicted Path','AI analyzes last 7 days of movement to predict where you\'re heading. Shown as clickable route for guardians.'],['👁️','Guardian View','Guardians & helpers see predicted path on map and can navigate directly to your likely location.']].map(([icon,title,desc])=>`
+      <div class="card" onclick="showToast('📋 ${title}: ${desc.substring(0,50)}...')" style="cursor:pointer">
+        <div style="display:flex;gap:10px"><span style="font-size:18px">${icon}</span><div><div style="font-size:13px;font-weight:600;margin-bottom:4px">${title}</div><div class="text-sm">${desc}</div></div></div>
+      </div>`).join('')}
+    </div>
+    <button class="btn btn-primary btn-full" style="margin-top:12px" onclick="closeModal();showToast('🧪 Test broadcast sent — Guardians received simulated offline alert')">Test Offline Alert</button>
+  `);
+}
+
+function showAddGuardian(){
+  openModal(`
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title">Add Guardian</div>
+    <div class="form-group"><label class="form-label">Name</label><input type="text" class="form-input" placeholder="Guardian's name" id="g-name"></div>
+    <div class="form-group"><label class="form-label">Phone</label><input type="tel" class="form-input" placeholder="+91 XXXXX XXXXX" id="g-phone"></div>
+    <div class="form-group"><label class="form-label">Relationship</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:6px">
+        ${['Family','Friend','Partner','Colleague','Neighbor','Other'].map(r=>`<button class="btn btn-secondary btn-sm" onclick="this.style.borderColor='var(--rose)';this.style.color='var(--rose)'">${r}</button>`).join('')}
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" style="margin-top:8px" onclick="const n=document.getElementById('g-name').value;closeModal();if(n)showToast('✅ Guardian added! They\'ll receive a link to accept.')">Send Invite</button>
+  `);
+}
+
+function expandEvidence(){
+  closeModal();
+  const overlay=document.createElement('div');overlay.className='modal-overlay';overlay.id='active-modal';
+  overlay.innerHTML=`
+    <div class="modal-sheet" style="position:relative;max-height:90vh;overflow-y:auto">
+      <div class="modal-handle"></div>
+      <button class="modal-close" onclick="closeModal();stopCameraStream()">✕</button>
+      <div class="modal-title">🔐 Evidence Capture</div>
+      <p class="text-sm mb-14" style="margin-bottom:14px">Capture & store encrypted evidence silently</p>
+
+      <!-- TAB ROW -->
+      <div class="tab-row" id="ev-tabs" style="margin-bottom:14px">
+        <button class="tab-btn active" onclick="switchEvTab('audio',this)">🎙️ Audio</button>
+        <button class="tab-btn" onclick="switchEvTab('photo',this)">📷 Photo</button>
+        <button class="tab-btn" onclick="switchEvTab('video',this)">🎥 Video</button>
+        <button class="tab-btn" onclick="switchEvTab('vault',this)">📂 Vault <span id="vault-count" style="background:var(--rose);color:#fff;border-radius:10px;padding:1px 5px;font-size:10px;margin-left:2px">${vaultItems.length}</span></button>
+      </div>
+
+      <!-- AUDIO TAB -->
+      <div id="ev-tab-audio">
+        <div class="time-picker-wrap" style="text-align:center;padding:20px">
+          <div id="audio-status" style="font-size:13px;color:var(--text2);margin-bottom:12px">${isRecording?'<span class="rec-pulse"></span>Recording in progress...':'Tap to start recording'}</div>
+          <div id="waveform-wrap" style="display:${isRecording?'flex':'none'};justify-content:center;margin-bottom:14px">
+            <div class="waveform">
+              ${[...Array(12)].map((_,i)=>`<div class="wave-bar" style="--d:${(0.3+i*0.08).toFixed(2)}s;--h:${6+Math.round(Math.random()*14)}px"></div>`).join('')}
+            </div>
+          </div>
+          <div id="modal-rec-time" style="font-family:var(--mono);font-size:28px;font-weight:700;color:${isRecording?'var(--rose)':'var(--text3)'};margin-bottom:14px">${isRecording?'00:00':'00:00'}</div>
+          <button class="btn ${isRecording?'btn-primary':'btn-secondary'} btn-full" id="modal-rec-btn" style="padding:14px;font-size:15px" onclick="modalToggleRecording()">
+            ${isRecording?'⏹ Stop Recording':'⏺ Start Recording'}
+          </button>
+        </div>
+        <div class="offline-banner" style="margin-top:10px"><span>🔒</span><div class="text-sm">AES-256 encrypted · Only you can access · Timestamp watermarked</div></div>
+      </div>
+
+      <!-- PHOTO TAB -->
+      <div id="ev-tab-photo" style="display:none">
+        <div class="photo-preview-wrap" id="photo-preview-wrap">
+          <video id="photo-video" autoplay playsinline muted style="display:none"></video>
+          <canvas id="photo-canvas" style="display:none"></canvas>
+          <div id="photo-placeholder" style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);flex-direction:column;gap:8px">
+            <span style="font-size:32px">📷</span><span style="font-size:12px">Camera preview</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn btn-secondary" style="flex:1" id="start-cam-btn" onclick="startCamera('photo')">📷 Open Camera</button>
+          <button class="btn btn-primary" style="flex:1" id="snap-btn" onclick="capturePhoto()" disabled>📸 Capture</button>
+          <button class="btn btn-secondary" id="flip-cam-btn" onclick="flipCamera()" style="padding:9px 12px">🔄</button>
+        </div>
+        <div class="offline-banner" style="margin-top:10px"><span>🔒</span><div class="text-sm">Photos stored locally with GPS metadata · AES-256 encrypted</div></div>
+      </div>
+
+      <!-- VIDEO TAB -->
+      <div id="ev-tab-video" style="display:none">
+        <div class="photo-preview-wrap" id="video-preview-wrap">
+          <video id="video-video" autoplay playsinline muted style="display:none"></video>
+          <div id="video-placeholder" style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--text3);flex-direction:column;gap:8px">
+            <span style="font-size:32px">🎥</span><span style="font-size:12px">Video preview</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn btn-secondary" style="flex:1" id="start-vid-btn" onclick="startCamera('video')">🎥 Open Camera</button>
+          <button class="btn btn-primary" style="flex:1" id="rec-vid-btn" onclick="toggleVideoRecording()" disabled>⏺ Record</button>
+        </div>
+        <div id="vid-rec-status" style="display:none;text-align:center;margin-top:8px;font-size:12px;color:var(--rose)"><span class="rec-pulse"></span>Recording — <span id="vid-rec-time">00:00</span></div>
+        <div class="offline-banner" style="margin-top:10px"><span>🔒</span><div class="text-sm">Video encrypted on-device · Auto-uploaded to your vault on WiFi</div></div>
+      </div>
+
+      <!-- VAULT TAB -->
+      <div id="ev-tab-vault" style="display:none">
+        <div id="vault-list">${vaultItems.length===0?'<div style="text-align:center;padding:30px 0;color:var(--text3)"><span style="font-size:32px">🔐</span><br><span style="font-size:13px;margin-top:8px;display:block">No evidence captured yet</span></div>':''}</div>
+      </div>
+    </div>`;
+  overlay.addEventListener('click',e=>{if(e.target===overlay){closeModal();stopCameraStream();}});
+  document.getElementById('modal-container').appendChild(overlay);
+  // populate vault
+  renderVaultList();
+  // sync recording state
+  syncModalRecordingState();
+}
+
+function switchEvTab(tab,btn){
+  ['audio','photo','video','vault'].forEach(t=>{
+    const el=document.getElementById('ev-tab-'+t);
+    if(el)el.style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('#ev-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  if(tab!=='photo'&&tab!=='video')stopCameraStream();
+}
+
+function syncModalRecordingState(){
+  const btn=document.getElementById('modal-rec-btn');
+  const status=document.getElementById('audio-status');
+  const wave=document.getElementById('waveform-wrap');
+  const timer=document.getElementById('modal-rec-time');
+  if(!btn)return;
+  if(isRecording){
+    btn.textContent='⏹ Stop Recording';btn.className='btn btn-primary btn-full';
+    if(status)status.innerHTML='<span class="rec-pulse"></span>Recording in progress...';
+    if(wave)wave.style.display='flex';
+    if(timer){timer.style.color='var(--rose)';updateRecordingUI();}
+  }else{
+    btn.textContent='⏺ Start Recording';btn.className='btn btn-secondary btn-full';
+    if(status)status.textContent='Tap to start recording';
+    if(wave)wave.style.display='none';
+    if(timer)timer.style.color='var(--text3)';
+  }
+}
+function modalToggleRecording(){toggleRecording();setTimeout(syncModalRecordingState,100);}
+
+// ── CAMERA ──
+let cameraStream=null, cameraFacing='environment', videoMediaRecorder=null, videoChunks=[], videoTimer=null, videoSeconds=0, isVideoRecording=false;
+async function startCamera(mode){
+  stopCameraStream();
+  try{
+    cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:cameraFacing},audio:mode==='video'});
+    const vid=document.getElementById(mode===('video')?'video-video':'photo-video');
+    const placeholder=document.getElementById(mode==='video'?'video-placeholder':'photo-placeholder');
+    if(vid){vid.srcObject=cameraStream;vid.style.display='block';}
+    if(placeholder)placeholder.style.display='none';
+    const snapBtn=document.getElementById(mode==='video'?'rec-vid-btn':'snap-btn');
+    if(snapBtn)snapBtn.disabled=false;
+  }catch(e){showToast('📷 Camera access denied — enable in browser settings');}
+}
+function flipCamera(){cameraFacing=cameraFacing==='environment'?'user':'environment';const tab=document.getElementById('ev-tab-video').style.display!=='none'?'video':'photo';startCamera(tab);}
+function stopCameraStream(){
+  if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;}
+  if(isVideoRecording){clearInterval(videoTimer);isVideoRecording=false;}
+}
+function capturePhoto(){
+  const vid=document.getElementById('photo-video');
+  const canvas=document.getElementById('photo-canvas');
+  if(!vid||!canvas)return;
+  canvas.width=vid.videoWidth;canvas.height=vid.videoHeight;
+  canvas.getContext('2d').drawImage(vid,0,0);
+  canvas.toBlob(blob=>{
+    const url=URL.createObjectURL(blob);
+    vaultItems.unshift({type:'photo',url,name:'Photo_'+new Date().toLocaleTimeString(),time:new Date().toLocaleTimeString(),blob});
+    updateEvidenceBadge();
+    showToast('📷 Photo captured & saved to vault!');
+    // flash effect
+    canvas.style.display='block';vid.style.display='none';
+    setTimeout(()=>{canvas.style.display='none';vid.style.display='block';},800);
+    renderVaultList();
+  },'image/jpeg',0.92);
+}
+async function toggleVideoRecording(){
+  if(!isVideoRecording){
+    if(!cameraStream)return;
+    videoChunks=[];
+    videoMediaRecorder=new MediaRecorder(cameraStream);
+    videoMediaRecorder.ondataavailable=e=>{if(e.data.size>0)videoChunks.push(e.data);};
+    videoMediaRecorder.onstop=()=>{
+      const blob=new Blob(videoChunks,{type:'video/webm'});
+      const url=URL.createObjectURL(blob);
+      vaultItems.unshift({type:'video',url,name:'Video_'+new Date().toLocaleTimeString(),duration:videoSeconds+'s',time:new Date().toLocaleTimeString(),blob});
+      updateEvidenceBadge();showToast('🎥 Video saved to vault!');renderVaultList();
+    };
+    videoMediaRecorder.start();isVideoRecording=true;videoSeconds=0;
+    videoTimer=setInterval(()=>{
+      videoSeconds++;
+      const m=Math.floor(videoSeconds/60).toString().padStart(2,'0');
+      const s=(videoSeconds%60).toString().padStart(2,'0');
+      const el=document.getElementById('vid-rec-time');if(el)el.textContent=m+':'+s;
+    },1000);
+    const btn=document.getElementById('rec-vid-btn');const status=document.getElementById('vid-rec-status');
+    if(btn){btn.textContent='⏹ Stop';btn.className='btn btn-primary';}
+    if(status)status.style.display='block';
+  }else{
+    if(videoMediaRecorder&&videoMediaRecorder.state!=='inactive')videoMediaRecorder.stop();
+    clearInterval(videoTimer);isVideoRecording=false;
+    const btn=document.getElementById('rec-vid-btn');const status=document.getElementById('vid-rec-status');
+    if(btn){btn.textContent='⏺ Record';btn.className='btn btn-primary';}
+    if(status)status.style.display='none';
+  }
+}
+function renderVaultList(){
+  const list=document.getElementById('vault-list');
+  if(!list)return;
+  if(vaultItems.length===0){list.innerHTML='<div style="text-align:center;padding:30px 0;color:var(--text3)"><span style="font-size:32px">🔐</span><br><span style="font-size:13px;margin-top:8px;display:block">No evidence captured yet</span></div>';return;}
+  list.innerHTML=vaultItems.map((item,i)=>`
+    <div class="vault-item" onclick="playVaultItem(${i})">
+      ${item.type==='photo'?`<img src="${item.url}" class="vault-thumb" />`:`<div class="vault-thumb-icon">${item.type==='audio'?'🎙️':'🎥'}</div>`}
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600">${item.name}</div>
+        <div style="font-size:11px;color:var(--text3)">${item.type.toUpperCase()} · ${item.time}${item.duration?' · '+item.duration:''}</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <a href="${item.url}" download="${item.name}.${item.type==='photo'?'jpg':item.type==='audio'?'webm':'webm'}" onclick="event.stopPropagation()" style="padding:5px 10px;background:var(--bg4);border:1px solid var(--border);border-radius:7px;font-size:11px;color:var(--text2);text-decoration:none;cursor:pointer">⬇ Save</a>
+        <button onclick="event.stopPropagation();deleteVaultItem(${i})" style="padding:5px 8px;background:rgba(255,53,103,0.1);border:1px solid rgba(255,53,103,0.2);border-radius:7px;font-size:11px;color:var(--rose);cursor:pointer;font-family:var(--font)">✕</button>
+      </div>
+    </div>`).join('');
+}
+function playVaultItem(i){
+  const item=vaultItems[i];if(!item)return;
+  if(item.type==='photo'){window.open(item.url,'_blank');return;}
+  const audio=new Audio(item.url);audio.play();showToast('▶ Playing '+item.name);
+}
+function deleteVaultItem(i){
+  vaultItems.splice(i,1);updateEvidenceBadge();renderVaultList();showToast('🗑️ Item deleted from vault');
+}
+
+// ── PREDICTED PATH TOGGLE ──
+function togglePredictedPath(){
+  predictedPathVisible=!predictedPathVisible;
+  const path=document.getElementById('predicted-path');
+  const btn=document.getElementById('pred-path-btn');
+  if(path){path.style.opacity=predictedPathVisible?'0.8':'0';}
+  if(btn){btn.textContent=predictedPathVisible?'Hide Path':'Show Path';}
+  if(predictedPathVisible)showToast('🟣 Predicted path shown — based on your last 7 days of movement patterns');
+}
+
+// ── MAP FILTER ──
+function setMapFilter(type,btn){
+  document.querySelectorAll('[id^="filter-"]').forEach(b=>{b.style.borderColor='';b.style.color='';});
+  btn.style.borderColor='var(--rose)';btn.style.color='var(--rose)';
+  const svg=document.getElementById('main-map-svg');if(!svg)return;
+  svg.querySelectorAll('.zone-safe,.zone-medium,.zone-high').forEach(el=>el.style.opacity='1');
+  svg.querySelectorAll('#safe-route,#alt-route').forEach(el=>el.style.opacity='1');
+  svg.querySelectorAll('.helper-dot').forEach(el=>el.style.opacity='1');
+  if(type==='safe'){svg.querySelectorAll('.zone-medium,.zone-high').forEach(el=>el.style.opacity='0.1');}
+  else if(type==='medium'){svg.querySelectorAll('.zone-safe,.zone-high').forEach(el=>el.style.opacity='0.1');}
+  else if(type==='high'){svg.querySelectorAll('.zone-safe,.zone-medium').forEach(el=>el.style.opacity='0.1');}
+  else if(type==='route'){svg.querySelectorAll('.zone-safe,.zone-medium,.zone-high').forEach(el=>el.style.opacity='0.15');svg.querySelectorAll('.helper-dot').forEach(el=>el.style.opacity='0.2');}
+  else if(type==='predicted'){togglePredictedPath();}
+}
+
+// ── ANOMALY BANNER ──
+function showAnomalyAlert(title,desc){
+  const banner=document.getElementById('anomaly-banner');
+  const titleEl=document.getElementById('anomaly-title');
+  const descEl=document.getElementById('anomaly-desc');
+  if(banner&&titleEl&&descEl){titleEl.textContent=title;descEl.textContent=desc;banner.style.display='block';}
+}
+
+// ── SIMULATIONS ──
+function startSimulations(){
+  // Live user position movement
+  let angle=0;
+  movementInterval=setInterval(()=>{
+    angle+=0.04;
+    const nx=200+Math.sin(angle)*12,ny=140+Math.cos(angle*0.7)*8;
+    const d1=document.getElementById('dash-user-dot');
+    const d2=document.getElementById('map-user-dot');
+    if(d1){d1.setAttribute('cx',nx);d1.setAttribute('cy',ny-80*0.55);}
+    if(d2){d2.setAttribute('cx',nx);d2.setAttribute('cy',ny);}
+  },100);
+
+  // Live score
+  setInterval(()=>{
+    if(!currentUser)return;
+    const base=62,v=8;
+    const s=Math.max(10,Math.min(95,base+(Math.random()-0.5)*v*2));
+    const r=Math.round(s);
+    const se=document.getElementById('score-display'),be=document.getElementById('score-bar');
+    if(se)se.textContent=r;
+    if(be)be.style.width=r+'%';
+    const rb=document.getElementById('risk-badge-main');
+    if(rb){
+      if(r>75){rb.className='risk-badge high';rb.innerHTML='<span class="dot"></span>High Risk';}
+      else if(r>40){rb.className='risk-badge medium';rb.innerHTML='<span class="dot"></span>Medium Risk';}
+      else{rb.className='risk-badge low';rb.innerHTML='<span class="dot"></span>Low Risk';}
+    }
+  },8000);
+
+  // Battery simulation
+  setInterval(()=>{
+    if(!currentUser)return;
+    batteryPct=Math.max(5,batteryPct-0.5);
+    const inner=document.getElementById('bat-inner'),pct=document.getElementById('bat-pct');
+    if(inner&&pct){
+      inner.style.width=batteryPct+'%';
+      inner.style.background=batteryPct<15?'var(--rose)':batteryPct<30?'var(--amber)':'var(--green)';
+      pct.textContent=Math.round(batteryPct)+'%';
+      if(batteryPct<10.5&&batteryPct>9.5)showToast('🔋 Battery critical! Auto-backup location sent to guardians');
+    }
+  },15000);
+}
+</script>
+</body>
+</html>
